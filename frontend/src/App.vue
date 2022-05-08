@@ -1,17 +1,17 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/">LoginPage</router-link> |
-      <router-link to="/signup">Signup</router-link>
-    </nav>
     <router-view />
   </div>
 </template>
 
 <script>
+import LoginView from "@/views/LoginView.vue";
+
 export default {
   data() {},
-  components: {},
+  components: {
+    LoginView,
+  },
   methods: {},
 };
 </script>
