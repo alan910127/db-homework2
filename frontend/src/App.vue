@@ -1,18 +1,29 @@
 <template>
   <div id="app">
-    <router-view />
+    <login-view v-if="user === null" @success="onLogin"></login-view>
+    <home-view v-else></home-view>
   </div>
 </template>
 
 <script>
 import LoginView from "@/views/LoginView.vue";
+import HomeView from "@/views/HomeView.vue";
 
 export default {
-  data() {},
+  data() {
+    return {
+      user: null,
+    };
+  },
   components: {
     LoginView,
+    HomeView,
   },
-  methods: {},
+  methods: {
+    onLogin(user) {
+      this.user = user;
+    },
+  },
 };
 </script>
 

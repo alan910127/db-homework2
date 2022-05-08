@@ -4,7 +4,8 @@
     <form @submit.prevent="onSubmit">
       <input v-model="account" type="text" placeholder="Account" />
       <input v-model="password" type="password" placeholder="Password" />
-      <button type="submit">Log In</button>
+      <button type="submit">Log In</button><br />
+      <button type="button" @click="changePage">Sign Up</button>
     </form>
   </div>
 </template>
@@ -25,15 +26,15 @@ export default {
       axios
         .get(`http://localhost:5000/getuser/${this.account}`)
         .then((resp) => resp["data"])
-        .then((data) => {
-          console.log(data);
+        .then((user) => {
+          console.log(user);
 
-          if (Object.entries(data).length === 0) {
+          if (Object.entries(user).length === 0) {
             alert("Login Failed!");
             return;
           }
 
-          const entries = data["password"].split("$");
+          const entries = user["password"].split("$");
           const salt = entries[0];
           const encoded = entries[1];
 
@@ -42,10 +43,13 @@ export default {
           if (hash !== encoded) {
             alert("Login Failed!");
           } else {
-            this.$emit("success", this.data);
+            this.$emit("success", user);
           }
         })
         .catch((error) => console.log(error));
+    },
+    changePage() {
+      this.$emit("change");
     },
   },
 };
