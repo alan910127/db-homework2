@@ -1,8 +1,8 @@
 <template>
   <div class="login">
     <h1>Login Page</h1>
-    <signin-page v-if="isSigninPage" @change="switchPage"></signin-page>
-    <signup-page v-else @change="switchPage"></signup-page>
+    <signin-page v-if="isSigninPage" @change-page="switchPage"></signin-page>
+    <signup-page v-else @change-page="switchPage"></signup-page>
   </div>
 </template>
 

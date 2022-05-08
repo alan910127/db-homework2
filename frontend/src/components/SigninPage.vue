@@ -49,7 +49,7 @@ export default {
         .catch((error) => console.log(error));
     },
     changePage() {
-      this.$emit("change");
+      this.$emit("change-page");
     },
   },
 };
