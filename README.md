@@ -39,20 +39,20 @@
 ```
 App.vue
  |
- |-- LoginView.vue
- |    |-- SigninPage.vue
- |    |-- SignupPage.vue
+ ├─ LoginView.vue
+ |    ├─ SigninPage.vue
+ |    └─ SignupPage.vue
  |
- |-- HomeView.vue
-      |-- HomePage.vue
-      |    |-- UserProfile.vue
-      |    |-- SearchShop.vue
-      |    |-- ShopList.vue
-      |         |-- MenuPage.vue
+ └─ HomeView.vue
+      ├─  HomePage.vue
+      |    ├─ UserProfile.vue
+      |    ├─ SearchShop.vue
+      |    └─ ShopList.vue
+      |         └─ MenuPage.vue
       |
-      |-- ShopPage.vue
-           |-- ShopRegister.vue
-           |-- AddMeal.vue
+      └─ ShopPage.vue
+           ├─ ShopRegister.vue
+           └─ AddMeal.vue
 ```
 
 ## Backend Functions
