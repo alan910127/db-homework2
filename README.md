@@ -31,7 +31,7 @@
     pip install Flask-Cors
     ```
     
-> Note: Enter the venv before running the `app.py` backend script using `source activate` <strong>EVERY TIME</strong>
+> Note: Enter the venv by typing `source activate` in shell before running the backend script `app.py` <strong>EVERY TIME</strong>
 
 ## Frontend Structure
 
