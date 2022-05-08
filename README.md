@@ -39,10 +39,11 @@
 ```
 App.vue
  |
- |-- LoginPage.vue
+ |-- LoginView.vue
+ |    |-- SigninPage.vue
  |    |-- SignupPage.vue
  |
- |-- MainPage.vue
+ |-- HomeView.vue
       |-- HomePage.vue
       |    |-- UserProfile.vue
       |    |-- SearchShop.vue
