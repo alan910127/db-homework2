@@ -4,7 +4,7 @@ from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 import datetime
 
-DB_USER = 'root'
+DB_USER = 'alan'
 DB_NAME = 'db_homework'
 
 
@@ -39,6 +39,13 @@ class UserSchema(ma.Schema):
     class Meta:
         fields = ('realname', 'account', 'phone', 'password', 'latitude', 'longitude')
 
+
+userSchema = UserSchema()
+
+@app.route('/getuser/<account>', methods = ['GET'])
+def get_user(account):
+    user = User.query.get(account)
+    return userSchema.jsonify(user)
 
 
 if __name__ == '__main__':
