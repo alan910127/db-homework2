@@ -7,7 +7,7 @@
 
 1. Change directory to this repo directory. 
     ```zsh
-    cd DB-homework
+    cd db_homework2
     ```
     
 2. Create the virtualenv
@@ -39,18 +39,17 @@
 
 ```
 App.vue
- |
  ├─ LoginView.vue
- |    ├─ SigninPage.vue
- |    └─ SignupPage.vue
- |
+ │    ├─ SigninPage.vue
+ │    └─ SignupPage.vue
+ │
  └─ HomeView.vue
       ├─  HomePage.vue
-      |    ├─ UserProfile.vue
-      |    ├─ SearchShop.vue
-      |    └─ ShopList.vue
-      |         └─ MenuPage.vue
-      |
+      │    ├─ UserProfile.vue
+      │    ├─ SearchShop.vue
+      │    └─ ShopList.vue
+      │         └─ MenuPage.vue
+      │
       └─ ShopPage.vue
            ├─ ShopRegister.vue
            └─ AddMeal.vue
@@ -58,4 +57,5 @@ App.vue
 
 ## Backend Functions
 
-- getPassword(username)
+- login(inputData)
+- register(userData)
