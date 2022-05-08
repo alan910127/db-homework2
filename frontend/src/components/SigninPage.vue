@@ -27,6 +27,7 @@ export default {
         .then((resp) => resp["data"])
         .then((data) => {
           console.log(data);
+
           if (Object.entries(data).length === 0) {
             alert("Login Failed!");
             return;
@@ -41,9 +42,7 @@ export default {
           if (hash !== encoded) {
             alert("Login Failed!");
           } else {
-            this.$router.push({
-              name: "homepage",
-            });
+            this.$emit("success", this.data);
           }
         })
         .catch((error) => console.log(error));
