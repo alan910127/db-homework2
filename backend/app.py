@@ -47,6 +47,19 @@ def get_user(account):
     user = User.query.get(account)
     return userSchema.jsonify(user)
 
+@app.route('http://localhost:5000/newUser', methods = ['POST'])
+def insertUserData(realname, account, phone, password):
+    realname = request.json["realname"]
+    account = request.json["account"]
+    phone = request.json["phone"]
+    password = request.json["password"]
+
+    userData = User(realname, account, phone, password, 0.0, 0.0)
+    db.session.add(userData)
+    db.session.commit()
+    return userSchema.jsonify(userData)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

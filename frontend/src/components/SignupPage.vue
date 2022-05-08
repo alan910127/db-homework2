@@ -74,11 +74,10 @@ export default {
       const hash = sha256(salt + this.password);
       console.log(`${salt}$${hash}`);
       axios.post("http://localhost:5000/newUser", {
-        realname: "",
-        account: "",
-        phone: "",
+        realname: this.realname,
+        account: this.account,
+        phone: this.phone,
         password: `${salt}$${hash}`,
-        retype: "",
       });
     },
 
