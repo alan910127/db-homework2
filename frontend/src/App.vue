@@ -9,11 +9,8 @@
 </template>
 
 <script>
-import { LoginPage } from "./components/LoginPage.vue";
-
 export default {
-  data: {},
-
+  data() {},
   components: {},
   methods: {},
 };
