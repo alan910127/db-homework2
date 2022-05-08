@@ -7,7 +7,7 @@
 
 1. Change directory to this repo directory. 
     ```zsh
-    cd DB-homework
+    cd db_homework2
     ```
     
 2. Create the virtualenv
