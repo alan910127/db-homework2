@@ -9,9 +9,9 @@
       <input v-model="retype" type="password" placeholder="Retype Password" />
       <input v-model="latitude" type="number" placeholder="Latitude" />
       <input v-model="longitude" type="number" placeholder="Longitude" />
-      <p>Already registered?</p>
       <button type="submit">Sign Up</button>
       <hr />
+      <p>Already registered?</p>
       <button type="button" @click="changePage">Sign In</button>
     </form>
   </div>

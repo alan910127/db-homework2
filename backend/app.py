@@ -4,14 +4,14 @@ from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 import datetime
 
-DB_USER = 'alan'
+DB_USER = 'root'
 DB_NAME = 'db_homework'
-
+DB_PASSWD = 'chenvincent610'
 
 app = Flask(__name__)
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://{DB_USER}:@127.0.0.1/{DB_NAME}'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://{DB_USER}:{DB_PASSWD}@127.0.0.1/{DB_NAME}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
