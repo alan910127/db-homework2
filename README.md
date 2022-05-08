@@ -5,20 +5,33 @@
 
 ## Virtual Environment Setup
 
-```shell
-cd DB-homework
-virtualenv -p python3 venv
-source activate
+1. Change directory to this repo directory. 
+    ```zsh
+    cd DB-homework
+    ```
+    
+2. Create the virtualenv
+    ```zsh
+    virtualenv -p python3 venv
+    ```
+    
+3. Activate the virtualenv
+    ```zsh
+    source activate
+    ```
 
-# in venv now
-
-pip install Flask
-pip install Flask-SQLAlchemy
-pip install flask-marshmallow
-pip install marshmallow
-pip install mysqlclient
-pip install Flask-Cors
-```
+#### In venv
+4. Install the following python packages
+    ```zsh
+    pip install Flask
+    pip install Flask-SQLAlchemy
+    pip install flask-marshmallow
+    pip install marshmallow
+    pip install mysqlclient
+    pip install Flask-Cors
+    ```
+    
+> Note: Enter the venv before running the `app.py` backend script using `source activate` <strong>EVERY TIME</strong>
 
 ## Frontend Structure
 
