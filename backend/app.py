@@ -22,7 +22,7 @@ class User(db.Model):
     realname = db.Column(db.String(255))
     account = db.Column(db.String(255), primary_key=True)
     phone = db.Column(db.String(10))
-    password = db.Column(db.String(64)) # hashed (sha256)
+    password = db.Column(db.String(41)) # hashed (sha256)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
 
