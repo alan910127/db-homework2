@@ -40,6 +40,7 @@
 App.vue
  |
  |-- LoginView.vue
+ |    |-- SigninPage.vue
  |    |-- SignupPage.vue
  |
  |-- HomeView.vue
