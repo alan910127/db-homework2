@@ -1,4 +1,3 @@
-from xml.dom.pulldom import CHARACTERS
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
@@ -11,7 +10,7 @@ DB_USER = 'alan'
 DB_NAME = 'db_homework'
 DB_PASSWD = ''
 
-CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+ALL_CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 
 app = Flask(__name__)
 CORS(app)
@@ -80,7 +79,7 @@ def registerUser():
     longitude = request.json['longitude']
 
     if User.query.get(account) is None:
-        salt = ''.join(choices(CHARACTERS, k=8))
+        salt = ''.join(choices(ALL_CHARACTERS, k=8))
         Hasher = sha256()
         Hasher.update(salt.encode('utf-8'))
         Hasher.update(password.encode('utf-8'))
