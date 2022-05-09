@@ -3,6 +3,8 @@ import HomeView from "@/views/HomeView.vue"
 import LoginView from "@/views/LoginView.vue"
 import SigninPage from "@/components/SigninPage.vue"
 import SignupPage from "@/components/SignupPage.vue"
+import UserProfile from "@/components/UserProfile.vue"
+import SearchShop from "@/components/SearchShop.vue"
 
 const routes = [
   {
@@ -10,7 +12,16 @@ const routes = [
     name: "home",
     component: HomeView,
     children: [
-
+      {
+        path: "/profile",
+        name: "profile",
+        component: UserProfile
+      },
+      {
+        path: "/shop",
+        name: "shop",
+        component: SearchShop
+      }
     ]
   },
   {
