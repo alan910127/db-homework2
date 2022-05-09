@@ -1,18 +1,22 @@
 <template>
   <div class="sign">
-    <h3>Sign In</h3>
     <form @submit.prevent="onSubmit">
-      <input v-model="account" type="text" placeholder="Account" />
-      <input v-model="password" type="password" placeholder="Password" />
-      <button type="submit">Log In</button><br />
-      <button type="button" @click="changePage">Sign Up</button>
+      <h3>Sign In</h3>
+      <div class="form-group">
+        <label>Account</label>
+        <input v-model="account" type="text" placeholder="Account" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input v-model="password" type="password" placeholder="Password" />
+      </div>
+      <button>Login</button><br />
     </form>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import sha256 from "sha256";
 
 export default {
   data() {
@@ -22,34 +26,22 @@ export default {
     };
   },
   methods: {
-    onSubmit() {
-      axios
-        .get(`http://localhost:5000/getuser/${this.account}`)
-        .then((resp) => resp["data"])
-        .then((user) => {
-          console.log(user);
+    async onSubmit() {
+      if (this.account === "" || this.password === "") {
+        alert("Please fill in all fields!");
+        return;
+      }
 
-          if (Object.entries(user).length === 0) {
-            alert("Login Failed!");
-            return;
-          }
+      const response = await axios.post("login", {
+        account: this.account,
+        password: this.password,
+      });
 
-          const entries = user["password"].split("$");
-          const salt = entries[0];
-          const encoded = entries[1];
-
-          const hash = sha256(salt + this.password);
-
-          if (hash !== encoded) {
-            alert("Login Failed!");
-          } else {
-            this.$emit("success", user);
-          }
-        })
-        .catch((error) => console.log(error));
+      this.$store.dispatch("user", response.data.user);
+      this.$router.push({ name: "home" });
     },
     changePage() {
-      this.$emit("change-page");
+      this.$router.push({ name: "signup" });
     },
   },
 };

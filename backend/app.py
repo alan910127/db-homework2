@@ -1,12 +1,17 @@
+from xml.dom.pulldom import CHARACTERS
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 import datetime
+from random import choices
+from hashlib import sha256
 
-DB_USER = 'root'
+DB_USER = 'alan'
 DB_NAME = 'db_homework'
-DB_PASSWD = 'chenvincent610'
+DB_PASSWD = ''
+
+CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 
 app = Flask(__name__)
 CORS(app)
@@ -22,7 +27,7 @@ class User(db.Model):
     realname = db.Column(db.String(255))
     account = db.Column(db.String(255), primary_key=True)
     phone = db.Column(db.String(10))
-    password = db.Column(db.String(41)) # hashed (sha256)
+    password = db.Column(db.String(73)) # salt(8) + $(1) + hash(64)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
 
@@ -42,22 +47,52 @@ class UserSchema(ma.Schema):
 
 userSchema = UserSchema()
 
-@app.route('/getuser/<account>', methods = ['GET'])
-def get_user(account):
+
+@app.route('/login', methods = ['POST'])
+def loginUser():
+    account = request.json['account']
+    password = request.json['password']
+
     user = User.query.get(account)
-    return userSchema.jsonify(user)
+    if user is None:
+        return { 'message': 'The given data was invalid', 'error': 'The user does not exists.' }
+    
+    salt, password_stored = user.password.split('$')
 
-@app.route('http://localhost:5000/newUser', methods = ['POST'])
-def insertUserData(realname, account, phone, password):
-    realname = request.json["realname"]
-    account = request.json["account"]
-    phone = request.json["phone"]
-    password = request.json["password"]
+    Hasher = sha256()
+    Hasher.update(salt.encode('utf-8'))
+    Hasher.update(password.encode('utf-8'))
+    password_hashed = Hasher.hexdigest()
 
-    userData = User(realname, account, phone, password, 0.0, 0.0)
-    db.session.add(userData)
-    db.session.commit()
-    return userSchema.jsonify(userData)
+    if password_hashed == password_stored:
+        return userSchema.jsonify(user)
+    else:
+        return { 'message': 'The given data was invalid', 'error': 'The password was wrong.' }
+
+
+@app.route('/register', methods = ['POST'])
+def registerUser():
+    realname = request.json['realname']
+    account = request.json['account']
+    phone = request.json['phone']
+    password = request.json['password']
+    latitude = request.json['latitude']
+    longitude = request.json['longitude']
+
+    if User.query.get(account) is None:
+        salt = ''.join(choices(CHARACTERS, k=8))
+        Hasher = sha256()
+        Hasher.update(salt.encode('utf-8'))
+        Hasher.update(password.encode('utf-8'))
+        password_hashed = Hasher.hexdigest()
+
+        userData = User(realname, account, phone, f'{salt}${password_hashed}', latitude, longitude)
+
+        db.session.add(userData)
+        db.session.commit()
+        return userSchema.jsonify(userData)
+    else:
+        return userSchema.jsonify(None)
 
 
 
