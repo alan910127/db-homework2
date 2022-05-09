@@ -1,41 +1,66 @@
 <template>
   <div class="sign">
-    <h3>Sign Up</h3>
     <form @submit.prevent="onSubmit">
-      <input v-model.lazy.trim="realname" type="text" placeholder="Real Name" />
-      <input v-model.lazy.trim="account" type="text" placeholder="Account" />
-      <input v-model.lazy.trim="phone" type="text" placeholder="Phone Number" />
-      <input
-        v-model.lazy.trim="password"
-        type="password"
-        placeholder="Password"
-      />
-      <input
-        v-model.lazy.trim="retype"
-        type="password"
-        placeholder="Retype Password"
-      />
-      <input
-        v-model.lazy.trim="latitude"
-        type="number"
-        placeholder="Latitude"
-      />
-      <input
-        v-model.lazy.trim="longitude"
-        type="number"
-        placeholder="Longitude"
-      />
+      <h3>Sign Up</h3>
+      <div class="form-group">
+        <label>Real Name</label>
+        <input
+          v-model.lazy.trim="realname"
+          type="text"
+          placeholder="Real Name"
+        />
+      </div>
+      <div class="form-group">
+        <label>Account</label>
+        <input v-model.lazy.trim="account" type="text" placeholder="Account" />
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input
+          v-model.lazy.trim="phone"
+          type="text"
+          placeholder="Phone Number"
+        />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input
+          v-model.lazy.trim="password"
+          type="password"
+          placeholder="Password"
+        />
+      </div>
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input
+          v-model.lazy.trim="confirm"
+          type="password"
+          placeholder="Retype Password"
+        />
+      </div>
+      <div class="form-group">
+        <label>Latitude</label>
+        <input
+          v-model.lazy.trim="latitude"
+          type="number"
+          placeholder="Latitude"
+        />
+      </div>
+      <div class="form-group">
+        <label>Longitude</label>
+        <input
+          v-model.lazy.trim="longitude"
+          type="number"
+          placeholder="Longitude"
+        />
+      </div>
       <button type="submit">Sign Up</button>
-      <hr />
-      <p>Already registered?</p>
-      <button type="button" @click="changePage">Sign In</button>
     </form>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import sha256 from "sha256";
 
 export default {
   data() {
@@ -44,45 +69,43 @@ export default {
       account: "",
       phone: "",
       password: "",
-      retype: "",
+      confirm: "",
+      latitude: null,
+      longitude: null,
     };
   },
   methods: {
-    genSalt(length) {
-      let result = "";
-      let characters =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      let numChars = characters.length;
-      for (let i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() * numChars));
+    async onSubmit() {
+      if (
+        this.realname === "" ||
+        this.account === "" ||
+        this.phone === "" ||
+        this.password === "" ||
+        this.confirm === ""
+      ) {
+        alert("Please fill in all fields!");
+        return;
       }
-      return result;
-    },
 
-    onSubmit() {
-      axios
-        .get(`http://localhost:5000/getuser/${this.account}`)
-        .then((resp) => resp["data"])
-        .then((user) => {
-          if (Object.entries(user).length > 0) {
-            alert("This account has been registered.");
-            return;
-          }
-        });
+      if (this.password !== this.confirm) {
+        alert("Please check your password!");
+        return;
+      }
 
-      const salt = this.genSalt(8);
-      const hash = sha256(salt + this.password);
-      console.log(`${salt}$${hash}`);
-      axios.post("http://localhost:5000/newUser", {
+      await axios.post("register", {
         realname: this.realname,
         account: this.account,
         phone: this.phone,
-        password: `${salt}$${hash}`,
+        password: this.password,
+        latitude: this.latitude,
+        longitude: this.longitude,
       });
+
+      this.$router.push({ name: "login" });
     },
 
     changePage() {
-      this.$emit("change-page");
+      this.$router.push({ name: "login" });
     },
   },
 };
