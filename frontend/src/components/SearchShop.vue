@@ -1,9 +1,59 @@
 <template>
-  <h3>This is shop search area.</h3>
+  <div class="searcharea">
+    <form @submit.prevent="onSubmit">
+      <div class="inputbar">
+        <label>Shop</label>
+        <input
+          v-model.lazy.trim="shopname"
+          type="text"
+          placeholder="Enter Shop name"
+        />
+      </div>
+      <div class="drop-down-menu">
+        <label> distance</label>
+        <select v-model="distance" placeholder="Select a distance">
+          <option>near</option>
+          <option>middle</option>
+          <option>far</option>
+        </select>
+      </div>
+      <div class="inputbar">
+        <label>Price</label>
+        <input v-model.lazy.trim="pricelow" type="text" /> ~
+        <input v-model.lazy.trim="pricehigh" type="text" />
+      </div>
+      <div class="inputbar">
+        <label>Meal</label>
+        <input v-model.lazy.trim="meal" type="text" placeholder="Enter Meal" />
+      </div>
+      <div class="inputbar">
+        <label>category</label>
+        <input
+          v-model.lazy.trim="category"
+          type="text"
+          placeholder="Enter shop category"
+        />
+      </div>
+    </form>
+  </div>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      shopname: "",
+      distance: "",
+      pricelow: "",
+      pricehigh: "",
+      meal: "",
+      category: "",
+    };
+  },
+  methods: {
+    onSubmit() {},
+  },
+};
 </script>
 
 <style>
