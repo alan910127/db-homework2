@@ -6,7 +6,8 @@
 </template>
 
 <script>
-import NavLogin from "../components/NavLogin.vue";
+import NavLogin from "@/components/NavLogin.vue";
+
 export default {
   data() {
     return {};
