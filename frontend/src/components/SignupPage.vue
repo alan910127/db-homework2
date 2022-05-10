@@ -84,22 +84,26 @@ export default {
         this.confirm === ""
       ) {
         alert("Please fill in all fields!");
+        this.password = this.confirm = "";
         return;
       }
 
       if (this.password !== this.confirm) {
         alert("Please check your password!");
+        this.password = this.confirm = "";
         return;
       }
 
-      await axios.post("register", {
-        realname: this.realname,
-        account: this.account,
-        phone: this.phone,
-        password: this.password,
-        latitude: this.latitude,
-        longitude: this.longitude,
-      });
+      axios
+        .post("register", {
+          realname: this.realname,
+          account: this.account,
+          phone: this.phone,
+          password: this.password,
+          latitude: this.latitude,
+          longitude: this.longitude,
+        })
+        .catch((err) => console.log(err));
 
       this.$router.push({ name: "login" });
     },

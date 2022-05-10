@@ -26,16 +26,21 @@ export default {
     };
   },
   methods: {
-    async onSubmit() {
+    onSubmit() {
       if (this.account === "" || this.password === "") {
         alert("Please fill in all fields!");
         return;
       }
 
-      const response = await axios.post("login", {
-        account: this.account,
-        password: this.password,
-      });
+      const response = axios
+        .post("login", {
+          account: this.account,
+          password: this.password,
+        })
+        .then((resp) => resp.data.user)
+        .catch((err) => {
+          console.log(err);
+        });
 
       this.$store.dispatch("user", response.data.user);
       this.$router.push({ name: "home" });

@@ -19,8 +19,8 @@
       </div>
       <div class="inputbar">
         <label>Price</label>
-        <input v-model.lazy.trim="pricelow" type="text" /> ~
-        <input v-model.lazy.trim="pricehigh" type="text" />
+        <input v-model.lazy.trim="pricelow" type="number" /> ~
+        <input v-model.lazy.trim="pricehigh" type="number" />
       </div>
       <div class="inputbar">
         <label>Meal</label>
@@ -34,11 +34,16 @@
           placeholder="Enter shop category"
         />
       </div>
+      <div class="button">
+        <button type="submit">Search</button>
+      </div>
     </form>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -51,7 +56,17 @@ export default {
     };
   },
   methods: {
-    onSubmit() {},
+    onSubmit() {
+      const response = axios.post("/getshop", {
+        shopname: this.shopname,
+        distance: this.distance,
+        pricelow: this.pricelow,
+        pricehigh: this.pricehigh,
+        meal: this.meal,
+        category: this.category,
+      });
+      console.log(response);
+    },
   },
 };
 </script>
