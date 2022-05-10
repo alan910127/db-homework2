@@ -131,6 +131,9 @@ def getShop():
     pricehigh = request.json["pricehigh"]
     meal = request.json["meal"]
     category = request.json["category"]
+
+    pattern = f"%{shopname}%"
+
     pass
 
 if __name__ == '__main__':

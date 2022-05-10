@@ -26,24 +26,36 @@ export default {
     };
   },
   methods: {
-    onSubmit() {
+    async onSubmit() {
       if (this.account === "" || this.password === "") {
         alert("Please fill in all fields!");
         return;
       }
 
-      const response = axios
+      const response = await axios
         .post("login", {
           account: this.account,
           password: this.password,
         })
-        .then((resp) => resp.data.user)
-        .catch((err) => {
-          console.log(err);
+        .catch((error) => {
+          const status = error.response.status;
+          if (status === 444) {
+            // user-defined error
+            alert(error.response.data.error);
+            this.account = this.password = "";
+            return;
+          } else {
+            throw error;
+          }
         });
 
-      this.$store.dispatch("user", response.data.user);
-      this.$router.push({ name: "home" });
+      console.log(response.data);
+
+      this.$store.dispatch("user", response.data);
+
+      console.log(this.$store.state.user);
+
+      this.$router.push({ name: "homepage" });
     },
     changePage() {
       this.$router.push({ name: "signup" });

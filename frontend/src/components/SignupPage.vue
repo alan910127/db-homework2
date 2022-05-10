@@ -94,7 +94,7 @@ export default {
         return;
       }
 
-      axios
+      await axios
         .post("register", {
           realname: this.realname,
           account: this.account,
@@ -103,13 +103,21 @@ export default {
           latitude: this.latitude,
           longitude: this.longitude,
         })
-        .catch((err) => console.log(err));
+        .catch((error) => {
+          const status = error.response.status;
+          if (status === 444) {
+            alert("This account has been registered!");
+            return;
+          } else {
+            throw error;
+          }
+        });
 
-      this.$router.push({ name: "login" });
+      this.$router.push({ name: "signin" });
     },
 
     changePage() {
-      this.$router.push({ name: "login" });
+      this.$router.push({ name: "signin" });
     },
   },
   watch: {
