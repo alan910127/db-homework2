@@ -112,6 +112,11 @@ export default {
       this.$router.push({ name: "login" });
     },
   },
+  watch: {
+    account(newAccount, oldAccount) {
+      console.log(`Field "Account": '${oldAccount}' -> '${newAccount}'.`);
+    },
+  },
 };
 </script>
 
