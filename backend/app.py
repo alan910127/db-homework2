@@ -24,11 +24,13 @@ ma = Marshmallow(app)
 
 class User(db.Model):
     realname = db.Column(db.String(255))
+    role = db.Column(db.String(10), default="user")
     account = db.Column(db.String(255), primary_key=True)
     phone = db.Column(db.String(10))
     password = db.Column(db.String(73)) # salt(8) + $(1) + hash(64)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
+    balance = db.Column(db.Integer, default=0)
 
     def __init__(self, realname, account, phone, password, latitude, longitude):
         self.realname = realname
@@ -36,16 +38,32 @@ class User(db.Model):
         self.phone = phone
         self.password = password
         self.latitude = latitude
+        self.longitude = longitude 
+
+class Shop(db.Model):
+    shopname = db.Column(db.String(255), primary_key=True)
+    category = db.Column(db.String(255))
+    latitude = db.Column(db.Float)
+    longitude = db.Column(db.Float)
+
+    def __init__(self, shopname, category, latitude, longitude):
+        self.shopname = shopname
+        self.category = category
+        self.latitude = latitude
         self.longitude = longitude
 
 
 class UserSchema(ma.Schema):
     class Meta:
-        fields = ('realname', 'account', 'phone', 'password', 'latitude', 'longitude')
+        fields = ('realname', 'role', 'account', 'phone', 'password', 'latitude', 'longitude', 'balance')
 
+class ShopSchema(ma.Schema):
+    class Meta:
+        fields = ('shopname', 'category', 'latitude', 'longitude')
 
 userSchema = UserSchema()
-
+shopSchema = ShopSchema()
+shopListSchema = ShopSchema(many=True)
 
 @app.route('/login', methods = ['POST'])
 def loginUser():
@@ -54,7 +72,7 @@ def loginUser():
 
     user = User.query.get(account)
     if user is None:
-        return { 'message': 'The given data was invalid', 'error': 'The user does not exists.' }
+        return ({ 'message': 'The given data was invalid', 'error': 'The user does not exists.' }, 444)
     
     salt, password_stored = user.password.split('$')
 
@@ -66,7 +84,7 @@ def loginUser():
     if password_hashed == password_stored:
         return userSchema.jsonify(user)
     else:
-        return { 'message': 'The given data was invalid', 'error': 'The password was wrong.' }
+        return ({ 'message': 'The given data was invalid', 'error': 'The password was wrong.' }, 444)
 
 
 @app.route('/register', methods = ['POST'])
@@ -78,7 +96,9 @@ def registerUser():
     latitude = request.json['latitude']
     longitude = request.json['longitude']
 
-    if User.query.get(account) is None:
+    userData = User.query.get(account)
+
+    if userData is None:
         salt = ''.join(choices(ALL_CHARACTERS, k=8))
         Hasher = sha256()
         Hasher.update(salt.encode('utf-8'))
@@ -91,9 +111,27 @@ def registerUser():
         db.session.commit()
         return userSchema.jsonify(userData)
     else:
-        return userSchema.jsonify(None)
+        return (userSchema.jsonify(userData), 444)
 
 
+
+@app.route('/getuser/<account>', methods = ['GET'])
+def getUser(account):
+    userData = User.query.get(account)
+    if userData is None:
+        return ({ 'message': 'The given data was invalid', 'error': 'The user does not exists.' }, 444)
+    else:
+        return userSchema.jsonify(userData)
+
+@app.route('/getshop', methods=['POST'])
+def getShop():
+    shopname = request.json["shopname"]
+    distance = request.json["distance"]
+    pricelow = request.json["pricelow"]
+    pricehigh = request.json["pricehigh"]
+    meal = request.json["meal"]
+    category = request.json["category"]
+    pass
 
 if __name__ == '__main__':
     app.run(debug=True)

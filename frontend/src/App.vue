@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   data() {
     return {};
@@ -12,7 +13,11 @@ export default {
   components: {},
   methods: {},
   created() {
-    this.$router.push({ name: "signin" });
+    if (this.user === null) this.$router.push({ name: "signin" });
+    else this.$router.push({ name: "home" });
+  },
+  computed: {
+    ...mapState({ user: (state) => state.user }),
   },
 };
 </script>
@@ -20,7 +25,7 @@ export default {
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

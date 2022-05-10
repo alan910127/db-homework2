@@ -1,28 +1,24 @@
 <template>
   <div>
     <h3>
-      Account: {{ realname }}, {{ role }} | PhoneNumber: {{ phone }} | location:
-      Not implemented
+      Account: {{ user.realname }}, {{ user.role }} | PhoneNumber:
+      {{ user.phone }} | location: ({{ user.longitude }}, {{ user.latitude }})
     </h3>
     <button type="submit" value="Edit">edit location</button>
-    <h3>walletbalance: {{ balance }}</h3>
+    <h3>walletbalance: {{ user.balance }}</h3>
   </div>
 </template>
 
 <script>
-// import axios from "axios";
-
+import { mapState } from "vuex";
 export default {
   data() {
-    return {
-      realname: "",
-      role: "",
-      phone: "",
-      location: "",
-      balance: "",
-    };
+    return {};
   },
   methods: {},
+  computed: {
+    ...mapState({ user: (state) => state.user }),
+  },
 };
 </script>
 
