@@ -1,5 +1,5 @@
 <template>
-  <div class="searcharea">
+  <div id="searcharea">
     <form @submit.prevent="onSubmit">
       <div class="inputbar">
         <label>Shop</label>
@@ -56,8 +56,8 @@ export default {
     };
   },
   methods: {
-    onSubmit() {
-      const response = axios.post("/getshop", {
+    async onSubmit() {
+      const response = await axios.post("/getshop", {
         shopname: this.shopname,
         distance: this.distance,
         pricelow: this.pricelow,
