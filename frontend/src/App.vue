@@ -32,13 +32,12 @@ export default {
 </script>
 
 
-<style>
+<style lang="scss">
+@import "@/styles/global.scss";
+
 #app {
-  font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
 }
 
 nav {
