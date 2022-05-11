@@ -23,6 +23,7 @@ ma = Marshmallow(app)
 
 
 class User(db.Model):
+    __tablename__ = 'users'
     realname = db.Column(db.String(255))
     role = db.Column(db.String(10), default="user")
     account = db.Column(db.String(255), primary_key=True)
@@ -31,6 +32,8 @@ class User(db.Model):
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
     balance = db.Column(db.Integer, default=0)
+    shopname = db.Column(db.String(255), db.ForeignKey('shops.shopname'), unique=True)
+    shop = db.relationship("Shop", backref=db.backref("users", uselist=False))
 
     def __init__(self, realname, account, phone, password, latitude, longitude):
         self.realname = realname
@@ -41,6 +44,7 @@ class User(db.Model):
         self.longitude = longitude 
 
 class Shop(db.Model):
+    __tablename__ = 'shops'
     shopname = db.Column(db.String(255), primary_key=True)
     category = db.Column(db.String(255))
     latitude = db.Column(db.Float)
@@ -52,14 +56,34 @@ class Shop(db.Model):
         self.latitude = latitude
         self.longitude = longitude
 
+class Meal(db.Model):
+    __tablename__ = 'meals'
+    name = db.Column(db.String(255), primary_key=True)
+    shopname = db.Column(db.String(255), db.ForeignKey('shops.shopname'), primary_key=True)
+    image = db.Column(db.String(255))
+    price = db.Column(db.Integer)
+    quantity = db.Column(db.Integer)
+    shop = db.relationship("Shop")
+
+    def __init__(self, name, shopname, image, price, quantity):
+        self.name = name
+        self.shopname = shopname
+        self.image = image
+        self.price = price
+        self.quantity = quantity
+
 
 class UserSchema(ma.Schema):
     class Meta:
-        fields = ('realname', 'role', 'account', 'phone', 'password', 'latitude', 'longitude', 'balance')
+        fields = ('realname', 'role', 'account', 'phone', 'password', 'latitude', 'longitude', 'balance', 'shopname')
 
 class ShopSchema(ma.Schema):
     class Meta:
         fields = ('shopname', 'category', 'latitude', 'longitude')
+
+class MealSchema(ma.Schema):
+    class Meta:
+        fields = ('name', 'shopname', 'image', 'price', 'quantity')
 
 userSchema = UserSchema()
 shopSchema = ShopSchema()
@@ -118,23 +142,31 @@ def registerUser():
 @app.route('/getuser/<account>', methods = ['GET'])
 def getUser(account):
     userData = User.query.get(account)
-    if userData is None:
-        return ({ 'message': 'The given data was invalid', 'error': 'The user does not exists.' }, 444)
-    else:
-        return userSchema.jsonify(userData)
+    return userSchema.jsonify(userData)
 
 @app.route('/getshop', methods=['POST'])
 def getShop():
     shopname = request.json["shopname"]
     distance = request.json["distance"]
-    pricelow = request.json["pricelow"]
-    pricehigh = request.json["pricehigh"]
+    pricelow = (lambda x: int(x) if x else 0)(request.json["pricelow"])
+    pricehigh = (lambda x: int(x) if x else 10 ** 300)(request.json["pricehigh"])
     meal = request.json["meal"]
     category = request.json["category"]
 
-    pattern = f"%{shopname}%"
+    print(request.json)
 
-    pass
+    subQuery = Meal.query.filter(Meal.price >= pricelow, Meal.price <= pricehigh, Meal.name.ilike(f'%{ meal }%')) \
+                    .with_entities(Meal.shopname).distinct()
+
+    print(f'{subQuery.all()=}')
+
+    shopListData =  Shop.query.filter(
+                        Shop.shopname.ilike(f'%{ shopname }%'), 
+                        Shop.category.ilike(f'%{ category }%'),
+                        subQuery.exists()
+                    ).all()
+
+    return shopListSchema.jsonify(shopListData)
 
 if __name__ == '__main__':
     app.run(debug=True)
