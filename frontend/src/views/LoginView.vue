@@ -1,25 +1,25 @@
 <template>
   <div class="login">
-    <nav-login />
     <router-view />
   </div>
 </template>
 
 <script>
-import NavLogin from "@/components/NavLogin.vue";
-
 export default {
   data() {
     return {};
   },
-  components: { NavLogin },
-  methods: {
-    logInSuccessed(user) {
-      this.$emit("success", user);
-    },
-  },
+  components: {},
+  methods: {},
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+@import "@/styles/global.scss";
+
+.login {
+  @include flex;
+  justify-content: center;
+  width: clamp(300px, 30%, 400px);
+}
 </style>

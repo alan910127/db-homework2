@@ -1,58 +1,135 @@
 <template>
   <div class="sign">
     <form @submit.prevent="onSubmit">
-      <h3>Sign Up</h3>
-      <div class="form-group">
-        <label>Real Name</label>
+      <div class="header">
+        <h3 class="signin" @click="changePage">Sign In</h3>
+        <h3 class="signup">Sign Up</h3>
+      </div>
+      <div class="input">
         <input
-          v-model.lazy.trim="realname"
+          v-model="form.realname"
+          :class="getInputClass('realname')"
+          @change="onInputChange($event, 'realname')"
+          name="realname"
+          id="realname"
           type="text"
-          placeholder="Real Name"
         />
+        <label for="realname" class="placeholder">
+          <span>Real Name</span>
+        </label>
+        <ul v-if="errors.realname && errors.realname.length">
+          <li v-for="(error, index) in errors.realname" :key="index">
+            {{ error }}
+          </li>
+        </ul>
       </div>
-      <div class="form-group">
-        <label>Account</label>
-        <input v-model.lazy.trim="account" type="text" placeholder="Account" />
-      </div>
-      <div class="form-group">
-        <label>Phone Number</label>
+      <div class="input">
         <input
-          v-model.lazy.trim="phone"
+          v-model.lazy="form.account"
+          :class="getInputClass('account')"
+          @change="onInputChange($event, 'account')"
+          name="account"
+          id="account"
           type="text"
-          placeholder="Phone Number"
         />
+        <label for="account" class="placeholder">
+          <span>Account</span>
+        </label>
+        <ul v-if="errors.account && errors.account.length">
+          <li v-for="(error, index) in errors.account" :key="index">
+            {{ error }}
+          </li>
+        </ul>
       </div>
-      <div class="form-group">
-        <label>Password</label>
+      <div class="input">
         <input
-          v-model.lazy.trim="password"
+          v-model="form.phone"
+          :class="getInputClass('phone')"
+          @change="onInputChange($event, 'phone')"
+          name="phone"
+          id="phone"
+          type="text"
+        />
+        <label for="phone" class="placeholder">
+          <span>Phone Number</span>
+        </label>
+        <ul v-if="errors.phone && errors.phone.length">
+          <li v-for="(error, index) in errors.phone" :key="index">
+            {{ error }}
+          </li>
+        </ul>
+      </div>
+      <div class="input">
+        <input
+          v-model="form.password"
+          :class="getInputClass('password')"
+          @change="onInputChange($event, 'password')"
+          name="password"
+          id="password"
           type="password"
-          placeholder="Password"
         />
+        <label for="password" class="placeholder">
+          <span>Password</span>
+        </label>
+        <ul v-if="errors.password && errors.password.length">
+          <li v-for="(error, index) in errors.password" :key="index">
+            {{ error }}
+          </li>
+        </ul>
       </div>
-      <div class="form-group">
-        <label>Confirm Password</label>
+      <div class="input">
         <input
-          v-model.lazy.trim="confirm"
+          v-model="form.confirm"
+          :class="getInputClass('confirm')"
+          @change="onInputChange($event, 'confirm')"
+          name="confirm"
+          id="confirm"
           type="password"
-          placeholder="Retype Password"
         />
+        <label for="confirm" class="placeholder">
+          <span>Confirm Password</span>
+        </label>
+        <ul v-if="errors.confirm && errors.confirm.length">
+          <li v-for="(error, index) in errors.confirm" :key="index">
+            {{ error }}
+          </li>
+        </ul>
       </div>
-      <div class="form-group">
-        <label>Latitude</label>
+      <div class="input">
         <input
-          v-model.lazy.trim="latitude"
+          v-model="form.latitude"
+          :class="getInputClass('latitude')"
+          @change="onInputChange($event, 'latitude')"
+          name="latitude"
+          id="latitude"
           type="number"
-          placeholder="Latitude"
         />
+        <label for="latitude" class="placeholder">
+          <span>Latitude</span>
+        </label>
+        <ul v-if="errors.latitude && errors.latitude.length">
+          <li v-for="(error, index) in errors.latitude" :key="index">
+            {{ error }}
+          </li>
+        </ul>
       </div>
-      <div class="form-group">
-        <label>Longitude</label>
+      <div class="input">
         <input
-          v-model.lazy.trim="longitude"
+          v-model="form.longitude"
+          :class="getInputClass('longitude')"
+          @change="onInputChange($event, 'longitude')"
+          name="longitude"
+          id="longitude"
           type="number"
-          placeholder="Longitude"
         />
+        <label for="latitude" class="placeholder">
+          <span>Longitude</span>
+        </label>
+        <ul v-if="errors.longitude && errors.longitude.length">
+          <li v-for="(error, index) in errors.longitude" :key="index">
+            {{ error }}
+          </li>
+        </ul>
       </div>
       <button type="submit">Sign Up</button>
     </form>
@@ -60,73 +137,148 @@
 </template>
 
 <script>
-import axios from "axios";
+import validationMixin from "@/mixins/validationMixin.js";
 
 export default {
   data() {
     return {
-      realname: "",
-      account: "",
-      phone: "",
-      password: "",
-      confirm: "",
-      latitude: null,
-      longitude: null,
+      form: {
+        realname: "",
+        account: "",
+        phone: "",
+        password: "",
+        confirm: "",
+        latitude: null,
+        longitude: null,
+      },
+      errors: {},
     };
   },
   methods: {
     async onSubmit() {
-      if (
-        this.realname === "" ||
-        this.account === "" ||
-        this.phone === "" ||
-        this.password === "" ||
-        this.confirm === ""
-      ) {
-        alert("Please fill in all fields!");
-        this.password = this.confirm = "";
-        return;
-      }
-
-      if (this.password !== this.confirm) {
+      if (this.form.password !== this.form.confirm) {
         alert("Please check your password!");
-        this.password = this.confirm = "";
+        this.form.password = this.form.confirm = "";
         return;
       }
-
-      await axios
-        .post("register", {
-          realname: this.realname,
-          account: this.account,
-          phone: this.phone,
-          password: this.password,
-          latitude: this.latitude,
-          longitude: this.longitude,
-        })
-        .catch((error) => {
-          const status = error.response.status;
-          if (status === 444) {
-            alert("This account has been registered!");
-            return;
-          } else {
-            throw error;
-          }
-        });
 
       this.$router.push({ name: "signin" });
     },
-
     changePage() {
       this.$router.push({ name: "signin" });
     },
-  },
-  watch: {
-    account(newAccount, oldAccount) {
-      console.log(`Field "Account": '${oldAccount}' -> '${newAccount}'.`);
+    getInputClass(fieldName) {
+      if (fieldName !== "longitude" && fieldName !== "latitude")
+        return this.form[fieldName].length ? "filled" : "";
+      else return this.form[fieldName] !== null ? "filled" : "";
+    },
+    onInputChange(e, field) {
+      const inputValue = e.target.value;
+      const inputErrors = this.validateField(field, inputValue);
+      if (inputErrors && inputErrors.length) {
+        this.errors[field] = inputErrors;
+      } else {
+        this.errors[field] = null;
+      }
     },
   },
+  mixins: [validationMixin],
 };
 </script>
 
-<style>
+
+<style lang="scss" scoped>
+@import "@/styles/global.scss";
+
+form {
+  @include flex;
+  gap: 20px;
+  width: clamp(300px, 30%, 400px);
+  padding: 20px;
+  box-sizing: border-box;
+  box-shadow: 0px 14px 20px 12px #00000012;
+  border-radius: 8px;
+  color: var(--text-color);
+  .header {
+    @include flex-row;
+    justify-content: space-between;
+    h3 {
+      margin: 0;
+      &.signin {
+        color: var(--gray-color);
+        font-size: 20px;
+        font-weight: 300;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      &.signin:hover {
+        color: var(--text-color);
+        font-size: 24px;
+        font-weight: 500;
+      }
+      &.signup {
+        margin-bottom: 0;
+        font-size: 26px;
+        font-weight: 500;
+        cursor: default;
+      }
+    }
+  }
+  .input {
+    position: relative;
+    @include flex;
+    input {
+      border: 2px solid var(--secondary-color);
+      border-radius: 8px;
+      background-color: var(--secondary-color);
+      outline: none;
+      color: var(--text-color);
+      padding: 10px 12px;
+      box-sizing: border-box;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      &:focus,
+      &:hover,
+      &.filled {
+        border: 2px solid var(--info-color);
+      }
+      &:focus + .placeholder span,
+      &.filled + .placeholder span {
+        transform: translateY(-100%);
+      }
+      /* Chrome, Safari, Edge, Opera */
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      /* Firefox */
+      &[type="number"] {
+        -moz-appearance: textfield;
+      }
+    }
+    .placeholder {
+      @include flex;
+      position: absolute;
+      width: calc(100% - 24px);
+      top: 10px;
+      left: 12px;
+      pointer-events: none;
+      overflow: hidden;
+      span {
+        transition: all 0.3s ease;
+        font-size: 14px;
+      }
+    }
+  }
+  button {
+    border: none;
+    border-radius: 4px;
+    padding: 10px 12px;
+    background-color: var(--info-color);
+    color: var(--white-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+}
 </style>
