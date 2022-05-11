@@ -112,7 +112,7 @@ export default {
             throw error;
           }
         });
-
+      alert("Register success!");
       this.$router.push({ name: "signin" });
     },
 
