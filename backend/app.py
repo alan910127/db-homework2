@@ -168,5 +168,37 @@ def getShop():
 
     return shopListSchema.jsonify(shopListData)
 
+@app.route('/addshop', methods=['POST'])
+def addshop():
+    shopname = request.json["shopname"]
+    category = request.json["category"]
+    latitude = request.json["latitude"]
+    longitude = request.json["longitude"]
+    
+    shop = Shop.query.get(shopname)
+    if shop is None:
+
+        shopData = Shop(shopname, category, latitude, longitude)
+        db.session.add(shopData)
+        db.session.commit()
+        return shopSchema.jsonify(shopData)
+    else:
+        return ({'message': "The shopname has been registered."}, 444)
+
+@app.route('/addmeal', methods=['POST'])
+def addmeal():
+    mealname = request.json["mealname"]
+    price = request.json["price"]
+    quantity = request.json["quantity"]
+    shopname = request.json["shopname"]
+
+    meal = Meal(mealname, shopname, "", price, quantity)
+    db.session.add(meal)
+    db.session.commit()
+
+    return MealSchema.jsonify(meal)
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
