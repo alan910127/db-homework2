@@ -4,7 +4,7 @@ import createPersistedState from "vuex-persistedstate";
 export default createStore({
   plugins: [createPersistedState()],
   state: {
-    user: null,
+    user: "",
     shops: []
   },
   getters: {

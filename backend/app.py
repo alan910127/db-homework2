@@ -42,12 +42,15 @@ class User(db.Model):
 
 class Shop(db.Model):
     shopname = db.Column(db.String(255), primary_key=True)
+    owner = db.Column(db.String(255))
     category = db.Column(db.String(255))
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
+    
 
-    def __init__(self, shopname, category, latitude, longitude):
+    def __init__(self, shopname, owner, category, latitude, longitude):
         self.shopname = shopname
+        self.owner = owner
         self.category = category
         self.latitude = latitude
         self.longitude = longitude
@@ -59,7 +62,7 @@ class UserSchema(ma.Schema):
 
 class ShopSchema(ma.Schema):
     class Meta:
-        fields = ('shopname', 'category', 'latitude', 'longitude')
+        fields = ('shopname', 'owner', 'category', 'latitude', 'longitude')
 
 userSchema = UserSchema()
 shopSchema = ShopSchema()
@@ -135,6 +138,18 @@ def getShop():
     pattern = f"%{shopname}%"
 
     pass
+@app.route('/addshop', methods=['POST'])
+def addShop():
+    shopname = request.json["shopname"]
+    owner = request.json["owner"]
+    category = request.json["category"]
+    longitude = request.json["longitude"]
+    latitude = request.json["latitude"]
+
+    shopData = Shop(shopname, owner, category, latitude, longitude)
+    db.session.add(shopData)
+    db.session.commit()
+    return ShopSchema(shopData)
 
 if __name__ == '__main__':
     app.run(debug=True)
