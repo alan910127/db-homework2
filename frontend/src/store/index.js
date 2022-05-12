@@ -5,11 +5,13 @@ export default createStore({
   plugins: [createPersistedState()],
   state: {
     user: null,
-    shops: []
+    shops: [],
+    shopname: null
   },
   getters: {
     user: (state) => state.user,
-    shops: (state) => state.shops
+    shops: (state) => state.shops,
+    shopname: (state) => state.shopname
   },
   mutations: {
     user(state, user) {
@@ -17,6 +19,9 @@ export default createStore({
     },
     shops(state, shops) {
       state.shops = shops;
+    },
+    shopname(state, shopname) {
+      state.shopname = shopname;
     }
   },
   actions: {
@@ -25,6 +30,9 @@ export default createStore({
     },
     shops(context, shops) {
       context.commit('shops', shops);
+    },
+    shopname(context, shopname) {
+      context.commit('shopname', shopname);
     }
   },
   modules: {
