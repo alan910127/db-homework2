@@ -131,13 +131,14 @@
           </li>
         </ul>
       </div>
-      <button type="submit">Sign Up</button>
+      <button type="submit" :disabled="buttonClass">Sign Up</button>
     </form>
   </div>
 </template>
 
 <script>
 import validationMixin from "@/mixins/validationMixin.js";
+import axios from "axios";
 
 export default {
   data() {
@@ -162,6 +163,15 @@ export default {
         return;
       }
 
+      await axios.post("/register", {
+        realname: this.form.realname,
+        account: this.form.account,
+        phone: this.form.phone,
+        password: this.form.password,
+        latitude: this.form.latitude,
+        longitude: this.form.longitude,
+      });
+
       this.$router.push({ name: "signin" });
     },
     changePage() {
@@ -169,17 +179,55 @@ export default {
     },
     getInputClass(fieldName) {
       if (fieldName !== "longitude" && fieldName !== "latitude")
-        return this.form[fieldName].length ? "filled" : "";
-      else return this.form[fieldName] !== null ? "filled" : "";
+        return (
+          (this.form[fieldName].length ? "filled" : "") +
+          (this.errors[fieldName] && this.errors[fieldName].length
+            ? " danger"
+            : "")
+        );
+      else
+        return (
+          (this.form[fieldName] !== null ? "filled" : "") +
+          (this.errors[fieldName] && this.errors[fieldName].length
+            ? " danger"
+            : "")
+        );
     },
-    onInputChange(e, field) {
+    async onInputChange(e, field) {
       const inputValue = e.target.value;
       const inputErrors = this.validateField(field, inputValue);
+
       if (inputErrors && inputErrors.length) {
         this.errors[field] = inputErrors;
       } else {
         this.errors[field] = null;
       }
+
+      if (field === "account") {
+        const response = await axios.get(`/getuser/${inputValue}`);
+
+        if (Object.keys(response.data).length > 0) {
+          this.errors[field] = [
+            ...(this.errors[field] ? this.errors[field] : []),
+            "This account is registered",
+          ];
+        }
+      } else if (field === "confirm") {
+        if (this.form.password !== this.form.confirm) {
+          this.errors[field] = [
+            ...(this.errors[field] ? this.errors[field] : []),
+            "Please check your password again",
+          ];
+        }
+      }
+    },
+  },
+  computed: {
+    buttonClass() {
+      for (const property in this.errors) {
+        if (this.errors[property] && this.errors[property].length) return true;
+      }
+      return false;
     },
   },
   mixins: [validationMixin],
@@ -256,6 +304,9 @@ form {
       &[type="number"] {
         -moz-appearance: textfield;
       }
+      &.danger {
+        border: 2px solid var(--danger-color);
+      }
     }
     .placeholder {
       @include flex;
@@ -271,6 +322,14 @@ form {
       }
     }
   }
+  ul {
+    color: var(--danger-color);
+    list-style-type: none;
+    padding: 0;
+    margin: 5px;
+    font-size: 12px;
+    gap: 4px;
+  }
   button {
     border: none;
     border-radius: 4px;
@@ -279,6 +338,10 @@ form {
     color: var(--white-color);
     cursor: pointer;
     transition: all 0.3s ease;
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
   }
 }
 </style>

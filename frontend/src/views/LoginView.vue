@@ -5,13 +5,7 @@
 </template>
 
 <script>
-export default {
-  data() {
-    return {};
-  },
-  components: {},
-  methods: {},
-};
+export default {};
 </script>
 
 <style lang="scss" scoped>

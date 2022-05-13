@@ -49,27 +49,20 @@
         />
       </svg>
       (
-      <input
-        v-model="user.longitude"
-        :disabled="!editing"
-        class="location-input"
-      />,
-      <input
-        v-model="user.latitude"
-        :disabled="!editing"
-        class="location-input"
-      />
+      <input v-model="user.longitude" :disabled="!editing" />,
+      <input v-model="user.latitude" :disabled="!editing" />
       )
-      <button type="submit" value="Edit" id="location-edit" @click="onClick">
-        {{ editing ? "done" : "edit" }}
+      <button v-if="editing" type="submit" value="Done" @click="doneEdit">
+        Done
       </button>
+      <button v-else type="submit" value="Edit" @click="startEdit">Edit</button>
     </div>
 
     <div class="profile-item">
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="20"
-        height="20"
+        width="16"
+        height="16"
         fill="currentColor"
         class="bi bi-piggy-bank-fill"
         viewBox="0 0 16 16"
@@ -79,12 +72,14 @@
         />
       </svg>
       {{ user.balance }}
+      <button type="submit" value="Add money">Add money</button>
     </div>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import { axios } from "axios";
 
 export default {
   data() {
@@ -93,8 +88,12 @@ export default {
     };
   },
   methods: {
-    onClick() {
-      this.editing = !this.editing;
+    startEdit() {
+      this.editing = true;
+    },
+    async doneEdit() {
+      this.editing = false;
+      await axios.put("");
     },
   },
   computed: {
@@ -103,56 +102,45 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+@import "@/styles/global.scss";
+
 #profile {
-  display: flex;
-  justify-content: center;
+  @include flex;
+  gap: 20px;
+  padding: 20px;
+  width: clamp(200px, 20%, 300px);
+  margin-left: 15px;
+  margin-right: 50px;
+  box-sizing: border-box;
+  box-shadow: 0px 14px 20px 12px #00000012;
 }
 
-.profile-item {
-  text-align: left;
-  margin: 10px 10px 10px 10px;
-  width: auto;
-  display: inline-block;
-}
-
-#location-edit {
-  border: 2px solid #dddddd;
-  background-color: #dddddd;
-  color: black;
+button {
+  border: 2px solid var(--info-color);
+  background-color: var(--info-color);
+  color: var(--white-color);
   padding: 0 10px;
   transition-duration: 0.4s;
   border-radius: 2px;
+  &:hover {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+  }
 }
 
-#location-edit:hover {
-  border: 2px solid gray;
-  background-color: white;
-  color: black;
-  border-radius: 2px;
-}
-
-.location-input:disabled {
-  border: none;
-  border-bottom: 0.05em solid white;
-  background-color: white;
-  padding: 0;
-  width: 50px;
-  text-align: left;
-  font-size: 16px;
-  color: #2c3e50;
-}
-
-.location-input,
-.location-input:focus {
+input {
   outline: none;
   border: none;
-  border-bottom: 0.05em solid gray;
-  background-color: white;
+  border-bottom: 0.05em solid var(--ternary-color);
+  background-color: var(--primary-color);
   padding: 0;
   width: 50px;
   text-align: left;
   font-size: 16px;
   color: #2c3e50;
+  &:disabled {
+    border-bottom: 0.05em solid var(--primary-color);
+  }
 }
 </style>

@@ -1,42 +1,74 @@
 <template>
   <div id="searcharea">
     <form @submit.prevent="onSubmit">
-      <div class="inputbar">
-        <label>Shop</label>
+      <div class="input">
         <input
-          v-model.lazy.trim="shopname"
+          v-model.lazy.trim="form.shopname"
+          name="shopname"
+          id="shopname"
           type="text"
-          placeholder="Enter Shop name"
         />
+        <label for="shopname" class="placeholder">
+          <span>Shop Name</span>
+        </label>
       </div>
       <div class="drop-down-menu">
-        <label> distance</label>
-        <select v-model="distance" placeholder="Select a distance">
+        <select v-model.lazy.trim="form.distance">
           <option>near</option>
           <option>middle</option>
           <option>far</option>
         </select>
+        <label for="distance" class="placeholder">
+          <span>Distance</span>
+        </label>
       </div>
-      <div class="inputbar">
-        <label>Price</label>
-        <input v-model.lazy.trim="pricelow" type="number" /> ~
-        <input v-model.lazy.trim="pricehigh" type="number" />
+      <div id="price">
+        <div class="input">
+          <input
+            v-model.lazy.trim="form.pricelow"
+            name="pricelow"
+            id="pricelow"
+            type="number"
+          />
+          <label for="pricelow" class="placeholder">
+            <span>Lowest Price</span>
+          </label>
+        </div>
+        <div class="input">
+          <input
+            v-model.lazy.trim="form.pricehigh"
+            name="pricehigh"
+            id="pricehigh"
+            type="number"
+          />
+          <label for="pricehigh" class="placeholder">
+            <span>Highest Price</span>
+          </label>
+        </div>
       </div>
-      <div class="inputbar">
-        <label>Meal</label>
-        <input v-model.lazy.trim="meal" type="text" placeholder="Enter Meal" />
-      </div>
-      <div class="inputbar">
-        <label>category</label>
+      <div class="input">
         <input
-          v-model.lazy.trim="category"
+          v-model.lazy.trim="form.meal"
+          name="meal"
+          id="meal"
           type="text"
-          placeholder="Enter shop category"
         />
+        <label for="meal" class="placeholder">
+          <span>Meal</span>
+        </label>
       </div>
-      <div class="button">
-        <button type="submit">Search</button>
+      <div class="input">
+        <input
+          v-model.lazy.trim="form.category"
+          name="category"
+          id="category"
+          type="text"
+        />
+        <label for="category" class="placeholder">
+          <span>Category</span>
+        </label>
       </div>
+      <button type="submit">Search</button>
     </form>
   </div>
 </template>
@@ -47,29 +79,35 @@ import axios from "axios";
 export default {
   data() {
     return {
-      shopname: "",
-      distance: "",
-      pricelow: "",
-      pricehigh: "",
-      meal: "",
-      category: "",
+      form: {
+        shopname: "",
+        distance: "",
+        pricelow: null,
+        pricehigh: null,
+        meal: "",
+        category: "",
+      },
     };
   },
   methods: {
     async onSubmit() {
       const response = await axios.post("/getshop", {
-        shopname: this.shopname,
-        distance: this.distance,
-        pricelow: this.pricelow,
-        pricehigh: this.pricehigh,
-        meal: this.meal,
-        category: this.category,
+        shopname: this.form.shopname,
+        distance: this.form.distance,
+        pricelow: this.form.pricelow,
+        pricehigh: this.form.pricehigh,
+        meal: this.form.meal,
+        category: this.form.category,
       });
-      console.log(response);
+
+      console.log(response.data);
+
+      this.$store.dispatch("shops", response.data);
     },
   },
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+@import "@/styles/global.scss";
 </style>

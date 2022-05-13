@@ -1,8 +1,10 @@
 <template>
-  <div>
+  <div id="homepage">
     <user-profile />
-    <search-shop />
-    <shop-list />
+    <div>
+      <search-shop />
+      <shop-list />
+    </div>
   </div>
 </template>
 
@@ -16,5 +18,11 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+@import "@/styles/global.scss";
+
+#homepage {
+  @include flex-row;
+  justify-content: space-evenly;
+}
 </style>
