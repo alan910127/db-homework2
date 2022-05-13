@@ -163,7 +163,7 @@ def getShop():
     shopListData =  Shop.query.filter(
                         Shop.shopname.ilike(f'%{ shopname }%'), 
                         Shop.category.ilike(f'%{ category }%'),
-                        subQuery.exists()
+                        Shop.shopname.in_(subQuery)
                     ).all()
 
     return shopListSchema.jsonify(shopListData)
