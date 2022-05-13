@@ -5,7 +5,6 @@
       <div class="input">
         <input
           v-model="form.shopname"
-          :class="getInputClass('shopname')"
           name="shopname"
           id="shopname"
           type="text"
@@ -17,7 +16,6 @@
       <div class="input">
         <input
           v-model="form.category"
-          :class="getInputClass('category')"
           name="category"
           id="category"
           type="text"
@@ -29,7 +27,6 @@
       <div class="input">
         <input
           v-model="form.latitude"
-          :class="getInputClass('latitude')"
           name="latitude"
           id="latitude"
           type="number"
@@ -41,7 +38,6 @@
       <div class="input">
         <input
           v-model="form.longitude"
-          :class="getInputClass('longitude')"
           name="longitude"
           id="longitude"
           type="number"

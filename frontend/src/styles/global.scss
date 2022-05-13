@@ -22,6 +22,7 @@
     --white-color: #fff;
     --black-color: #000;
     --gray-color: #ccc;
+    --lightgray-color: #999;
 }
 
 body {
@@ -33,4 +34,130 @@ body {
     background-color: var(--primary-color);
     font-family: "Google Sans";
     font-family: Arial, Helvetica, sans-serif;
+}
+
+.custom-nav {
+    @include flex-row;
+    justify-content: space-between;
+    margin-bottom: 10px;
+
+    h3 {
+        margin: 0;
+        color: var(--text-color);
+
+        &.another {
+            color: var(--gray-color);
+            font-size: 20px;
+            font-weight: 300;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        &.another:hover {
+            color: var(--text-color);
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        &.current {
+            margin-bottom: 0;
+            font-size: 26px;
+            font-weight: 500;
+            cursor: default;
+        }
+    }
+}
+
+.beautiful-form {
+    @include flex;
+    gap: 20px;
+    width: clamp(300px, 30%, 400px);
+    padding: 20px;
+    box-sizing: border-box;
+    box-shadow: 0px 14px 20px 12px #00000012;
+    border-radius: 8px;
+    color: var(--text-color);
+
+    .input {
+        position: relative;
+        @include flex;
+
+        input {
+            border: 2px solid var(--secondary-color);
+            border-radius: 8px;
+            background-color: var(--secondary-color);
+            outline: none;
+            color: var(--text-color);
+            padding: 10px 12px;
+            box-sizing: border-box;
+            font-size: 14px;
+            transition: all 0.3s ease;
+
+            &:focus,
+            &:hover,
+            &.filled {
+                border: 2px solid var(--info-color);
+            }
+
+            &:focus+.placeholder span,
+            &.filled+.placeholder span {
+                transform: translateY(-100%);
+            }
+
+            /* Chrome, Safari, Edge, Opera */
+            &::-webkit-outer-spin-button,
+            &::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            /* Firefox */
+            &[type="number"] {
+                -moz-appearance: textfield;
+            }
+
+            &.danger {
+                border: 2px solid var(--danger-color);
+            }
+        }
+
+        .placeholder {
+            @include flex;
+            position: absolute;
+            width: calc(100% - 24px);
+            top: 10px;
+            left: 12px;
+            pointer-events: none;
+            overflow: hidden;
+
+            span {
+                transition: all 0.3s ease;
+                font-size: 14px;
+            }
+        }
+    }
+
+    ul {
+        color: var(--danger-color);
+        list-style-type: none;
+        padding: 0;
+        margin: 5px;
+        font-size: 12px;
+        gap: 4px;
+    }
+
+    button {
+        border: none;
+        border-radius: 4px;
+        padding: 10px 12px;
+        background-color: var(--info-color);
+        color: var(--white-color);
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    }
 }

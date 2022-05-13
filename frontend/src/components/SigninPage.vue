@@ -1,9 +1,5 @@
 <template>
-  <form @submit.prevent="onSubmit">
-    <div class="header">
-      <h3 class="signin">Sign In</h3>
-      <h3 class="signup" @click="changePage">Sign Up</h3>
-    </div>
+  <form @submit.prevent="onSubmit" class="beautiful-form">
     <div class="input">
       <input
         v-model="form.account"
@@ -28,7 +24,7 @@
         <span>Password</span>
       </label>
     </div>
-    <button type="submit">Login</button><br />
+    <button type="submit">Login</button>
   </form>
 </template>
 
@@ -88,86 +84,4 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/styles/global.scss";
-
-form {
-  @include flex;
-  gap: 20px;
-  width: clamp(300px, 30%, 400px);
-  padding: 20px;
-  box-sizing: border-box;
-  box-shadow: 0px 14px 20px 12px #00000012;
-  border-radius: 8px;
-  color: var(--text-color);
-  .header {
-    @include flex-row;
-    justify-content: space-between;
-    h3 {
-      margin: 0;
-      &.signin {
-        margin-bottom: 0;
-        font-size: 26px;
-        font-weight: 500;
-        cursor: default;
-      }
-      &.signup {
-        color: var(--gray-color);
-        font-size: 20px;
-        font-weight: 300;
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
-      &.signup:hover {
-        color: var(--text-color);
-        font-size: 24px;
-        font-weight: 500;
-      }
-    }
-  }
-  .input {
-    position: relative;
-    @include flex;
-    input {
-      border: 2px solid var(--secondary-color);
-      border-radius: 8px;
-      background-color: var(--secondary-color);
-      outline: none;
-      color: var(--text-color);
-      padding: 10px 12px;
-      box-sizing: border-box;
-      font-size: 14px;
-      transition: all 0.3s ease;
-      &:focus,
-      &:hover,
-      &.filled {
-        border: 2px solid var(--info-color);
-      }
-      &:focus + .placeholder span,
-      &.filled + .placeholder span {
-        transform: translateY(-100%);
-      }
-    }
-    .placeholder {
-      @include flex;
-      position: absolute;
-      width: calc(100% - 24px);
-      top: 10px;
-      left: 12px;
-      pointer-events: none;
-      overflow: hidden;
-      span {
-        transition: all 0.3s ease;
-        font-size: 14px;
-      }
-    }
-  }
-  button {
-    border: none;
-    border-radius: 4px;
-    padding: 10px 12px;
-    background-color: var(--info-color);
-    color: var(--white-color);
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-}
 </style>

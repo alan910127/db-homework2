@@ -87,7 +87,10 @@ class MealSchema(ma.Schema):
 
 userSchema = UserSchema()
 shopSchema = ShopSchema()
+mealSchema = MealSchema()
+
 shopListSchema = ShopSchema(many=True)
+mealListSchema = MealSchema(many=True)
 
 @app.route('/login', methods = ['POST'])
 def loginUser():
@@ -186,7 +189,7 @@ def addshop():
         return ({'message': "The shopname has been registered."}, 444)
 
 @app.route('/addmeal', methods=['POST'])
-def addmeal():
+def addMeal():
     mealname = request.json["mealname"]
     price = request.json["price"]
     quantity = request.json["quantity"]
@@ -196,9 +199,22 @@ def addmeal():
     db.session.add(meal)
     db.session.commit()
 
-    return MealSchema.jsonify(meal)
+    return mealSchema.jsonify(meal)
 
 
+@app.route('/getmeal', methods=['POST'])
+def getMeal():
+    shopname = request.json["shopname"]
+    pricelow = (lambda x: int(x) if x else 0)(request.json["pricelow"])
+    pricehigh = (lambda x: int(x) if x else 10 ** 300)(request.json["pricehigh"])
+    meal = request.json["meal"]
+    
+    mealData = Meal.query.filter_by(shopname=shopname).filter(
+        Meal.price >= pricelow, 
+        Meal.price <= pricehigh,
+        Meal.name.ilike(f'%{meal}%')).all()
+
+    return mealListSchema.jsonify(mealData)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,36 +1,57 @@
 <template>
   <div class="home">
-    <h1>Home Page</h1>
-    <button type="button" @click="onClick">Logout</button>
-    <nav-home />
+    <side-bar />
     <router-view />
-    <popup-window v-if="showPopup" @closePopup="showPopup = false">
-      <h1>Popup!</h1>
-    </popup-window>
-    <button @click="showPopup = true">Show Popup</button>
   </div>
 </template>
 
 <script>
-import NavHome from "@/components/NavHome.vue";
-import PopupWindow from "../components/PopupWindow.vue";
+import SideBar from "@/components/SideBar.vue";
 
 export default {
   name: "HomeView",
   data() {
     return {
       showPopup: false,
+      isHomePage: true,
     };
   },
-  components: {
-    NavHome,
-    PopupWindow,
-  },
+  components: { SideBar },
   methods: {
-    onClick() {
-      this.$store.dispatch("user", null);
-      this.$router.push({ name: "signin" });
+    changePage(clickTarget) {
+      this.isHomePage = clickTarget === "home";
+      this.$router.push({ name: this.isHomePage ? "homepage" : "shoppage" });
+    },
+    getNavItemClass(nav) {
+      if (this.isHomePage) {
+        return nav === "home" ? "current" : "another";
+      } else {
+        return nav === "shop" ? "current" : "another";
+      }
     },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+@import "@/styles/global.scss";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.home {
+  display: flex;
+
+  main {
+    flex: 1 1 0;
+    padding: 2rem;
+
+    @media (max-width: 768px) {
+      padding-left: 6rem;
+    }
+  }
+}
+</style>

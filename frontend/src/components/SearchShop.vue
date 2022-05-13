@@ -1,6 +1,6 @@
 <template>
   <div id="searcharea">
-    <form @submit.prevent="onSubmit">
+    <form @submit.prevent="onSubmit" class="beautiful-form">
       <div class="input">
         <input
           v-model.lazy.trim="form.shopname"
@@ -110,4 +110,46 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/styles/global.scss";
+
+.drop-down-menu {
+  position: relative;
+  @include flex;
+
+  select {
+    border: 2px solid var(--secondary-color);
+    border-radius: 8px;
+    background-color: var(--secondary-color);
+    outline: none;
+    color: var(--text-color);
+    padding: 10px 12px;
+    box-sizing: border-box;
+    font-size: 14px;
+    transition: all 0.3s ease;
+
+    &:focus,
+    &:hover,
+    &.filled {
+      border: 2px solid var(--info-color);
+    }
+
+    &:focus + .placeholder span,
+    &.filled + .placeholder span {
+      transform: translateY(-100%);
+    }
+  }
+  .placeholder {
+    @include flex;
+    position: absolute;
+    width: calc(100% - 24px);
+    top: 10px;
+    left: 12px;
+    pointer-events: none;
+    overflow: hidden;
+
+    span {
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+  }
+}
 </style>

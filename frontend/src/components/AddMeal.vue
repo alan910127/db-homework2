@@ -5,7 +5,6 @@
       <div class="input">
         <input
           v-model="form.mealname"
-          :class="getInputClass('mealname')"
           name="mealname"
           id="mealname"
           type="text"
@@ -15,13 +14,7 @@
         </label>
       </div>
       <div class="input">
-        <input
-          v-model="form.price"
-          :class="getInputClass('price')"
-          name="price"
-          id="price"
-          type="number"
-        />
+        <input v-model="form.price" name="price" id="price" type="number" />
         <label for="price" class="placeholder">
           <span>price</span>
         </label>
@@ -29,7 +22,6 @@
       <div class="input">
         <input
           v-model="form.quantity"
-          :class="getInputClass('quantity')"
           name="quantity"
           id="quantity"
           type="number"

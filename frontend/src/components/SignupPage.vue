@@ -1,10 +1,6 @@
 <template>
   <div class="sign">
     <form @submit.prevent="onSubmit">
-      <div class="header">
-        <h3 class="signin" @click="changePage">Sign In</h3>
-        <h3 class="signup">Sign Up</h3>
-      </div>
       <div class="input">
         <input
           v-model="form.realname"
@@ -247,31 +243,6 @@ form {
   box-shadow: 0px 14px 20px 12px #00000012;
   border-radius: 8px;
   color: var(--text-color);
-  .header {
-    @include flex-row;
-    justify-content: space-between;
-    h3 {
-      margin: 0;
-      &.signin {
-        color: var(--gray-color);
-        font-size: 20px;
-        font-weight: 300;
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
-      &.signin:hover {
-        color: var(--text-color);
-        font-size: 24px;
-        font-weight: 500;
-      }
-      &.signup {
-        margin-bottom: 0;
-        font-size: 26px;
-        font-weight: 500;
-        cursor: default;
-      }
-    }
-  }
   .input {
     position: relative;
     @include flex;
