@@ -56,7 +56,7 @@ class Meal(db.Model):
     __tablename__ = 'meals'
     name = db.Column(db.String(255), primary_key=True)
     shopname = db.Column(db.String(255), db.ForeignKey('shops.shopname'), primary_key=True)
-    image = db.Column(db.String(255))
+    image = db.Column(db.TEXT)
     price = db.Column(db.Integer)
     quantity = db.Column(db.Integer)
     shop = db.relationship("Shop")
