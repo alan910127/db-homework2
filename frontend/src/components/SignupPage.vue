@@ -99,6 +99,7 @@
           name="latitude"
           id="latitude"
           type="number"
+          step="0.000000000000001"
         />
         <label for="latitude" class="placeholder">
           <span>Latitude</span>
@@ -117,6 +118,7 @@
           name="longitude"
           id="longitude"
           type="number"
+          step="0.000000000000001"
         />
         <label for="latitude" class="placeholder">
           <span>Longitude</span>
@@ -168,9 +170,6 @@ export default {
         longitude: this.form.longitude,
       });
 
-      this.$router.push({ name: "signin" });
-    },
-    changePage() {
       this.$router.push({ name: "signin" });
     },
     getInputClass(fieldName) {
