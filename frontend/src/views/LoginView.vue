@@ -14,18 +14,12 @@
 
 <script>
 export default {
-  data() {
-    return {
-      isSignIn: true,
-    };
-  },
   methods: {
     changePage(clickTarget) {
-      this.isSignIn = clickTarget === "signin";
-      this.$router.push({ name: this.isSignIn ? "signin" : "signup" });
+      this.$router.push({ name: clickTarget });
     },
     getNavItemClass(nav) {
-      if (this.isSignIn) {
+      if (this.$route.name === "signin") {
         return nav === "signin" ? "current" : "another";
       } else {
         return nav === "signup" ? "current" : "another";
