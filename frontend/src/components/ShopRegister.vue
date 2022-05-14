@@ -4,55 +4,64 @@
     <form @submit.prevent="onSubmit">
       <div class="input">
         <input
-          v-model="form.shopname"
+          v-model.lazy.trim="form.shopname"
           name="shopname"
           id="shopname"
           type="text"
+          v-if="user.role === 'user'"
         />
+        <input v-else :value="shop.shopname" disabled="true" />
         <label for="shopname" class="placeholder">
-          <span>shopname</span>
+          <span> shopname</span>
         </label>
       </div>
       <div class="input">
         <input
-          v-model="form.category"
+          v-model.lazy.trim="form.category"
           name="category"
           id="category"
           type="text"
+          v-if="user.role === 'user'"
         />
+        <input v-else :value="shop.category" disabled="true" />
         <label for="category" class="placeholder">
           <span> shop category</span>
         </label>
       </div>
       <div class="input">
         <input
-          v-model="form.latitude"
+          v-model.lazy.trim="form.latitude"
           name="latitude"
           id="latitude"
           type="number"
+          v-if="user.role === 'user'"
         />
+        <input v-else :value="shop.latitude" disabled="true" />
         <label for="latitude" class="placeholder">
-          <span>latitude</span>
+          <span> latitude</span>
         </label>
       </div>
       <div class="input">
         <input
-          v-model="form.longitude"
+          v-model.lazy.trim="form.longitude"
           name="longitude"
           id="longitude"
           type="number"
+          v-if="user.role === 'user'"
         />
+        <input v-else :value="shop.longitude" disabled="true" />
         <label for="longitude" class="placeholder">
-          <span>longitude</span>
+          <span> longitude</span>
         </label>
       </div>
-      <button type="submit">register</button>
+      <button type="submit" :disabled="user.role === 'owner'">register</button>
     </form>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import { mapState } from "vuex";
 
 export default {
   data() {
@@ -63,26 +72,37 @@ export default {
         latitude: null,
         longitude: null,
       },
+      isRegistered: false,
     };
   },
   methods: {
     async onSubmit() {
       await axios
-        .post("addshop", {
-          shopname: this.shopname,
-          category: this.category,
-          latitude: this.latitude,
-          longitude: this.longitude,
+        .post("/addshop", {
+          account: this.user.account,
+          shopname: this.form.shopname,
+          category: this.form.category,
+          latitude: this.form.latitude,
+          longitude: this.form.longitude,
+        })
+        .then((res) => {
+          this.$store.dispatch("shop", res.data);
+          console.log(res.data);
+          this.isRegistered = true;
+          return;
         })
         .catch((error) => {
           const response = error.response.data.message;
           alert(response);
+          this.isRegistered = false;
           return;
         });
 
-      this.$store.dispatch("shopname", this.shopname);
-      alert("Successfully Registered!");
+      this.$router.go(0);
     },
+  },
+  computed: {
+    ...mapState(["user", "shop"]),
   },
 };
 </script>
