@@ -2,20 +2,16 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
-import datetime
 from random import choices
 from hashlib import sha256
-
-DB_USER = 'alan'
-DB_NAME = 'db_homework'
-DB_PASSWD = ''
+import os
 
 ALL_CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 
 app = Flask(__name__)
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://{DB_USER}:{DB_PASSWD}@127.0.0.1/{DB_NAME}'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////' + os.getcwd() + '/db_homework.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -172,7 +168,8 @@ def getShop():
     return shopListSchema.jsonify(shopListData)
 
 @app.route('/addshop', methods=['POST'])
-def addshop():
+def addShop():
+    account = request.json["account"]
     shopname = request.json["shopname"]
     category = request.json["category"]
     latitude = request.json["latitude"]
@@ -180,9 +177,11 @@ def addshop():
     
     shop = Shop.query.get(shopname)
     if shop is None:
-
         shopData = Shop(shopname, category, latitude, longitude)
         db.session.add(shopData)
+        # db.session.commit()
+        User.query.filter(User.account == account).update({'role': "owner"})
+        User.query.filter(User.account == account).update({'shopname': shopname})
         db.session.commit()
         return shopSchema.jsonify(shopData)
     else:
@@ -193,28 +192,25 @@ def addMeal():
     mealname = request.json["mealname"]
     price = request.json["price"]
     quantity = request.json["quantity"]
-    shopname = request.json["shopname"]
+    shopname = request.json['shopname']
+    image = request.json["image"]
 
-    meal = Meal(mealname, shopname, "", price, quantity)
+    meal = Meal(mealname, shopname, image, price, quantity)
     db.session.add(meal)
     db.session.commit()
 
     return mealSchema.jsonify(meal)
 
 
-@app.route('/getmeal', methods=['POST'])
-def getMeal():
-    shopname = request.json["shopname"]
-    pricelow = (lambda x: int(x) if x else 0)(request.json["pricelow"])
-    pricehigh = (lambda x: int(x) if x else 10 ** 300)(request.json["pricehigh"])
-    meal = request.json["meal"]
-    
-    mealData = Meal.query.filter_by(shopname=shopname).filter(
-        Meal.price >= pricelow, 
-        Meal.price <= pricehigh,
-        Meal.name.ilike(f'%{meal}%')).all()
-
+@app.route('/getmeal/<shopname>', methods=['GET'])
+def getMeal(shopname):
+    mealData = Meal.query.filter_by(shopname=shopname).all()
     return mealListSchema.jsonify(mealData)
+
+@app.route('/getshop/<account>', methods=['GET'])
+def getshop(account):
+    shopData = Shop.query.filter_by(account=account).all()
+    return shopSchema.jsonify(shopData)
 
 if __name__ == '__main__':
     app.run(debug=True)
