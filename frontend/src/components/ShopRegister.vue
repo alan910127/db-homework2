@@ -72,7 +72,6 @@ export default {
         latitude: null,
         longitude: null,
       },
-      isRegistered: false,
     };
   },
   methods: {
@@ -88,13 +87,11 @@ export default {
         .then((res) => {
           this.$store.dispatch("shop", res.data);
           console.log(res.data);
-          this.isRegistered = true;
           return;
         })
         .catch((error) => {
           const response = error.response.data.message;
           alert(response);
-          this.isRegistered = false;
           return;
         });
 
