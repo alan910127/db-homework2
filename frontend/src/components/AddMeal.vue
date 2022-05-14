@@ -10,13 +10,13 @@
           type="text"
         />
         <label for="mealname" class="placeholder">
-          <span>mealname</span>
+          <span> mealname</span>
         </label>
       </div>
       <div class="input">
         <input v-model="form.price" name="price" id="price" type="number" />
         <label for="price" class="placeholder">
-          <span>price</span>
+          <span> price</span>
         </label>
       </div>
       <div class="input">
@@ -27,11 +27,12 @@
           type="number"
         />
         <label for="quantity" class="placeholder">
-          <span>quantity</span>
+          <span> quantity</span>
         </label>
       </div>
       <div>
-        <p>upload picture</p>
+        <label> upload picture</label><br />
+        <input type="file" accept=".png,.jpg,.jpeg" @change="onFileChange" />
       </div>
       <button type="submit">Add</button>
     </form>
@@ -49,6 +50,7 @@ export default {
         mealname: "",
         price: null,
         quantity: null,
+        image: null,
       },
     };
   },
@@ -56,20 +58,33 @@ export default {
     async onSubmit() {
       await axios
         .post("/addmeal", {
-          mealname: this.mealname,
-          price: this.price,
-          quantity: this.quantity,
-          shopname: mapState["shopname"],
+          mealname: this.form.mealname,
+          price: this.form.price,
+          quantity: this.form.quantity,
+          shopname: this.shop.shopname,
+          image: this.form.image,
+        })
+        .then(() => {
+          alert("added successfully!");
+          // this.$router.go(0);
         })
         .catch((error) => {
           const response = error.response.data.message;
           alert(response);
           return;
         });
-
-      alert("added successfully!");
-      // refresh ?
     },
+    onFileChange(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        this.form.image = reader.result;
+      };
+      reader.readAsDataURL(file);
+    },
+  },
+  computed: {
+    ...mapState(["shop"]),
   },
 };
 </script>
