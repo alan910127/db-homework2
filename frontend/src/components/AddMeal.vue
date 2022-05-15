@@ -66,7 +66,11 @@ export default {
         })
         .then(() => {
           alert("added successfully!");
-          // this.$router.go(0);
+          this.form.mealname = "";
+          this.form.price = null;
+          this.form.quantity = null;
+          this.form.image = null;
+          this.getMeals();
         })
         .catch((error) => {
           const response = error.response.data.message;
@@ -81,6 +85,11 @@ export default {
         this.form.image = reader.result;
       };
       reader.readAsDataURL(file);
+    },
+    async getMeals() {
+      const res = await axios.get(`/getmeal/${this.shop.shopname}`);
+      console.log(res.data);
+      this.$store.dispatch("meals", res.data);
     },
   },
   computed: {
