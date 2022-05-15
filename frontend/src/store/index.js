@@ -6,12 +6,14 @@ export default createStore({
   state: {
     user: null,
     shops: [],
-    shop: null
+    shop: null,
+    meals: []
   },
   getters: {
     user: (state) => state.user,
     shops: (state) => state.shops,
-    shop: (state) => state.shop
+    shop: (state) => state.shop,
+    meals: (state) => state.meals,
   },
   mutations: {
     user(state, user) {
@@ -22,6 +24,9 @@ export default createStore({
     },
     shop(state, shop) {
       state.shop = shop;
+    },
+    meals(state, meals) {
+      state.meals = meals;
     }
   },
   actions: {
@@ -33,6 +38,9 @@ export default createStore({
     },
     shop(context, shop) {
       context.commit('shop', shop);
+    },
+    meals(context, meals) {
+      context.commit('meals', meals);
     }
   },
   modules: {
