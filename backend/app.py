@@ -2,20 +2,19 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
-import datetime
+from geoalchemy2 import Geometry
+from sqlalchemy import event
+
 from random import choices
 from hashlib import sha256
-
-DB_USER = 'alan'
-DB_NAME = 'db_homework'
-DB_PASSWD = ''
+from os import path, getcwd
 
 ALL_CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 
 app = Flask(__name__)
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://{DB_USER}:{DB_PASSWD}@127.0.0.1/{DB_NAME}'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:////{ path.join(getcwd(), "db_homework.db") }'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
