@@ -55,7 +55,7 @@ export default {
   },
   data() {
     return {
-      isEdit: {},
+      isEdit: [],
     };
   },
   methods: {
@@ -85,7 +85,8 @@ export default {
           shopname: this.shop.shopname,
         })
         .then(() => {
-          this.getMeals();
+          let checker = (item) => item === false;
+          if (this.isEdit.every(checker)) this.getMeals();
         });
     },
   },
