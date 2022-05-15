@@ -212,5 +212,24 @@ def getshop(account):
     shopData = Shop.query.filter_by(account=account).all()
     return shopSchema.jsonify(shopData)
 
+@app.route('/deletemeal', methods=['POST'])
+def deleteMeal():
+    shopname = request.json["shopname"]
+    mealname = request.json["mealname"]
+    Meal.query.filter_by(shopname=shopname, name=mealname).delete()
+    db.session.commit()
+    return ({'message': "The meal has been deleted."}, 200)
+
+@app.route('/editmeal', methods=['POST'])
+def editMeal():
+    shopname = request.json["shopname"]
+    mealname = request.json["mealname"]
+    price = request.json["price"]
+    quantity = request.json["quantity"]
+
+    Meal.query.filter_by(shopname=shopname, name=mealname).update({'price': price, 'quantity': quantity})
+    db.session.commit()
+    return ({'message': "The meal has been edited."}, 200)
+
 if __name__ == '__main__':
     app.run(debug=True)
