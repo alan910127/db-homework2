@@ -1,58 +1,71 @@
 <template>
   <div>
     <h3>Start a business</h3>
-    <form @submit.prevent="onSubmit">
+    <form @submit.prevent="onSubmit" class="beautiful-form">
       <div class="input">
         <input
-          v-model="form.shopname"
+          v-model.lazy.trim="form.shopname"
           name="shopname"
           id="shopname"
           type="text"
+          v-if="user.role === 'user'"
+          :class="getInputClass('shopname')"
         />
+        <input v-else :value="shop.shopname" disabled="true" />
         <label for="shopname" class="placeholder">
-          <span>shopname</span>
+          <span v-if="user.role === 'user'">shopname</span>
         </label>
       </div>
       <div class="input">
         <input
-          v-model="form.category"
+          v-model.lazy.trim="form.category"
           name="category"
           id="category"
           type="text"
+          v-if="user.role === 'user'"
+          :class="getInputClass('category')"
         />
+        <input v-else :value="shop.category" disabled="true" />
         <label for="category" class="placeholder">
-          <span> shop category</span>
+          <span v-if="user.role === 'user'"> shop category</span>
         </label>
       </div>
       <div class="input">
         <input
-          v-model="form.latitude"
+          v-model.lazy.trim="form.latitude"
           name="latitude"
           id="latitude"
           type="number"
+          v-if="user.role === 'user'"
+          :class="getInputClass('latitude')"
         />
+        <input v-else :value="shop.latitude" disabled="true" />
         <label for="latitude" class="placeholder">
-          <span>latitude</span>
+          <span v-if="user.role === 'user'"> latitude</span>
         </label>
       </div>
       <div class="input">
         <input
-          v-model="form.longitude"
+          v-model.lazy.trim="form.longitude"
           name="longitude"
           id="longitude"
           type="number"
+          v-if="user.role === 'user'"
+          :class="getInputClass('longitude')"
         />
+        <input v-else :value="shop.longitude" disabled="true" />
         <label for="longitude" class="placeholder">
-          <span>longitude</span>
+          <span v-if="user.role === 'user'"> longitude</span>
         </label>
       </div>
-      <button type="submit">register</button>
+      <button type="submit" :disabled="user.role === 'owner'">register</button>
     </form>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import { mapState } from "vuex";
 
 export default {
   data() {
@@ -68,11 +81,17 @@ export default {
   methods: {
     async onSubmit() {
       await axios
-        .post("addshop", {
-          shopname: this.shopname,
-          category: this.category,
-          latitude: this.latitude,
-          longitude: this.longitude,
+        .post("/addshop", {
+          account: this.user.account,
+          shopname: this.form.shopname,
+          category: this.form.category,
+          latitude: this.form.latitude,
+          longitude: this.form.longitude,
+        })
+        .then((res) => {
+          this.$store.dispatch("shop", res.data);
+          console.log(res.data);
+          return;
         })
         .catch((error) => {
           const response = error.response.data.message;
@@ -80,12 +99,30 @@ export default {
           return;
         });
 
-      this.$store.dispatch("shopname", this.shopname);
-      alert("Successfully Registered!");
+      this.$router.go(0);
     },
+    getInputClass(field) {
+      return this.form[field] ? "filled" : "";
+    },
+  },
+  computed: {
+    ...mapState(["user", "shop"]),
   },
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+@import "@/styles/global.scss";
+.beautiful-form {
+  @include flex-row;
+  width: auto;
+  .input {
+    .placeholder {
+      height: 1em;
+      color: var(--text-color);
+      top: 10px;
+      overflow: hidden;
+    }
+  }
+}
 </style>

@@ -2,19 +2,16 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
-from geoalchemy2 import Geometry
-from sqlalchemy import event
-
 from random import choices
 from hashlib import sha256
-from os import path, getcwd
+import os
 
 ALL_CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 
 app = Flask(__name__)
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:////{ path.join(getcwd(), "db_homework.db") }'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:////{ os.path.join(os.getcwd(), "db_homework.db") }'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -59,7 +56,7 @@ class Meal(db.Model):
     __tablename__ = 'meals'
     name = db.Column(db.String(255), primary_key=True)
     shopname = db.Column(db.String(255), db.ForeignKey('shops.shopname'), primary_key=True)
-    image = db.Column(db.String(255))
+    image = db.Column(db.TEXT)
     price = db.Column(db.Integer)
     quantity = db.Column(db.Integer)
     shop = db.relationship("Shop")
@@ -171,7 +168,8 @@ def getShop():
     return shopListSchema.jsonify(shopListData)
 
 @app.route('/addshop', methods=['POST'])
-def addshop():
+def addShop():
+    account = request.json["account"]
     shopname = request.json["shopname"]
     category = request.json["category"]
     latitude = request.json["latitude"]
@@ -179,9 +177,11 @@ def addshop():
     
     shop = Shop.query.get(shopname)
     if shop is None:
-
         shopData = Shop(shopname, category, latitude, longitude)
         db.session.add(shopData)
+        # db.session.commit()
+        User.query.filter(User.account == account).update({'role': "owner"})
+        User.query.filter(User.account == account).update({'shopname': shopname})
         db.session.commit()
         return shopSchema.jsonify(shopData)
     else:
@@ -192,28 +192,48 @@ def addMeal():
     mealname = request.json["mealname"]
     price = request.json["price"]
     quantity = request.json["quantity"]
-    shopname = request.json["shopname"]
+    shopname = request.json['shopname']
+    image = request.json["image"]
+    if image is None:
+        image = "https://i.imgur.com/QnhW8Vu.png"
+    if price is None or quantity is None or mealname is None:
+        return ({'message': "The given data was invalid."}, 444)
 
-    meal = Meal(mealname, shopname, "", price, quantity)
-    db.session.add(meal)
+    mealData = Meal(mealname, shopname, image, price, quantity)
+    db.session.add(mealData)
     db.session.commit()
+    return mealSchema.jsonify(mealData)
+  
 
-    return mealSchema.jsonify(meal)
 
-
-@app.route('/getmeal', methods=['POST'])
-def getMeal():
-    shopname = request.json["shopname"]
-    pricelow = (lambda x: int(x) if x else 0)(request.json["pricelow"])
-    pricehigh = (lambda x: int(x) if x else 10 ** 300)(request.json["pricehigh"])
-    meal = request.json["meal"]
-    
-    mealData = Meal.query.filter_by(shopname=shopname).filter(
-        Meal.price >= pricelow, 
-        Meal.price <= pricehigh,
-        Meal.name.ilike(f'%{meal}%')).all()
-
+@app.route('/getmeal/<shopname>', methods=['GET'])
+def getMeal(shopname):
+    mealData = Meal.query.filter_by(shopname=shopname).all()
     return mealListSchema.jsonify(mealData)
+
+@app.route('/getshop/<account>', methods=['GET'])
+def getshop(account):
+    shopData = Shop.query.filter_by(account=account).all()
+    return shopSchema.jsonify(shopData)
+
+@app.route('/deletemeal', methods=['POST'])
+def deleteMeal():
+    shopname = request.json["shopname"]
+    mealname = request.json["mealname"]
+    Meal.query.filter_by(shopname=shopname, name=mealname).delete()
+    db.session.commit()
+    return ({'message': "The meal has been deleted."}, 200)
+
+@app.route('/editmeal', methods=['POST'])
+def editMeal():
+    shopname = request.json["shopname"]
+    mealname = request.json["mealname"]
+    price = request.json["price"]
+    quantity = request.json["quantity"]
+    
+    Meal.query.filter_by(shopname=shopname, name=mealname).update({'price': price, 'quantity': quantity})
+    db.session.commit()
+    return ({'message': "The meal has been edited."}, 200)
 
 if __name__ == '__main__':
     app.run(debug=True)
