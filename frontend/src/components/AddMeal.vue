@@ -1,20 +1,27 @@
 <template>
   <div>
     <h3>ADD</h3>
-    <form @submit.prevent="onSubmit">
+    <form @submit.prevent="onSubmit" class="beautiful-form">
       <div class="input">
         <input
           v-model="form.mealname"
           name="mealname"
           id="mealname"
           type="text"
+          :class="getInputClass('mealname')"
         />
         <label for="mealname" class="placeholder">
           <span> mealname</span>
         </label>
       </div>
       <div class="input">
-        <input v-model="form.price" name="price" id="price" type="number" />
+        <input
+          v-model="form.price"
+          name="price"
+          id="price"
+          type="number"
+          :class="getInputClass('price')"
+        />
         <label for="price" class="placeholder">
           <span> price</span>
         </label>
@@ -25,14 +32,14 @@
           name="quantity"
           id="quantity"
           type="number"
+          :class="getInputClass('quantity')"
         />
         <label for="quantity" class="placeholder">
           <span> quantity</span>
         </label>
       </div>
-      <div>
-        <label> upload picture</label><br />
-        <input type="file" accept=".png,.jpg,.jpeg" @change="onFileChange" />
+      <div class="input">
+        <input type="file" accept="image/*" @change="onFileChange" id="file" />
       </div>
       <button type="submit">Add</button>
     </form>
@@ -71,6 +78,7 @@ export default {
           this.form.quantity = null;
           this.form.image = null;
           this.getMeals();
+          document.getElementById("file").value = "";
         })
         .catch((error) => {
           const response = error.response.data.message;
@@ -91,6 +99,9 @@ export default {
       console.log(res.data);
       this.$store.dispatch("meals", res.data);
     },
+    getInputClass(field) {
+      return this.form[field] ? "filled" : "";
+    },
   },
   computed: {
     ...mapState(["shop"]),
@@ -98,5 +109,27 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+@import "@/styles/global.scss";
+
+.beautiful-form {
+  @include flex-row;
+  width: auto;
+  .input {
+    input[type="file"] {
+      cursor: pointer;
+      height: 40px;
+      &::-webkit-file-upload-button {
+        display: none;
+      }
+    }
+
+    .placeholder {
+      height: 1em;
+      color: var(--text-color);
+      top: 10px;
+      overflow: hidden;
+    }
+  }
+}
 </style>

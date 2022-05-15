@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3>Start a business</h3>
-    <form @submit.prevent="onSubmit">
+    <form @submit.prevent="onSubmit" class="beautiful-form">
       <div class="input">
         <input
           v-model.lazy.trim="form.shopname"
@@ -9,10 +9,11 @@
           id="shopname"
           type="text"
           v-if="user.role === 'user'"
+          :class="getInputClass('shopname')"
         />
         <input v-else :value="shop.shopname" disabled="true" />
         <label for="shopname" class="placeholder">
-          <span> shopname</span>
+          <span v-if="user.role === 'user'">shopname</span>
         </label>
       </div>
       <div class="input">
@@ -22,10 +23,11 @@
           id="category"
           type="text"
           v-if="user.role === 'user'"
+          :class="getInputClass('category')"
         />
         <input v-else :value="shop.category" disabled="true" />
         <label for="category" class="placeholder">
-          <span> shop category</span>
+          <span v-if="user.role === 'user'"> shop category</span>
         </label>
       </div>
       <div class="input">
@@ -35,10 +37,11 @@
           id="latitude"
           type="number"
           v-if="user.role === 'user'"
+          :class="getInputClass('latitude')"
         />
         <input v-else :value="shop.latitude" disabled="true" />
         <label for="latitude" class="placeholder">
-          <span> latitude</span>
+          <span v-if="user.role === 'user'"> latitude</span>
         </label>
       </div>
       <div class="input">
@@ -48,10 +51,11 @@
           id="longitude"
           type="number"
           v-if="user.role === 'user'"
+          :class="getInputClass('longitude')"
         />
         <input v-else :value="shop.longitude" disabled="true" />
         <label for="longitude" class="placeholder">
-          <span> longitude</span>
+          <span v-if="user.role === 'user'"> longitude</span>
         </label>
       </div>
       <button type="submit" :disabled="user.role === 'owner'">register</button>
@@ -97,6 +101,9 @@ export default {
 
       this.$router.go(0);
     },
+    getInputClass(field) {
+      return this.form[field] ? "filled" : "";
+    },
   },
   computed: {
     ...mapState(["user", "shop"]),
@@ -104,5 +111,18 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+@import "@/styles/global.scss";
+.beautiful-form {
+  @include flex-row;
+  width: auto;
+  .input {
+    .placeholder {
+      height: 1em;
+      color: var(--text-color);
+      top: 10px;
+      overflow: hidden;
+    }
+  }
+}
 </style>

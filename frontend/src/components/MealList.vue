@@ -109,5 +109,33 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+@import "@/styles/global.scss";
+
+table {
+  margin-top: 20px;
+  margin-left: 10px;
+  thead {
+    tr {
+      background: #cfcccc;
+      th {
+        text-align: center;
+      }
+    }
+  }
+  tbody {
+    tr {
+      background: #eeecec;
+      td {
+        text-align: center;
+      }
+    }
+    input {
+      width: 65px;
+      text-align: center;
+    }
+  }
+  width: 100%;
+  border-collapse: collapse;
+}
 </style>

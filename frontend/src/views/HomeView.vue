@@ -44,6 +44,7 @@ export default {
 
 .home {
   display: flex;
+  gap: 3%;
 
   main {
     flex: 1 1 0;
