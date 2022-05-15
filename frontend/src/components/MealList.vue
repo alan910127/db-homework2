@@ -18,7 +18,12 @@
           <td><img :src="meal.image" width="100" height="100" /></td>
           <td>{{ meal.name }}</td>
           <td>
-            <input v-if="!isEdit[index]" :value="meal.price" disabled="true" />
+            <input
+              v-if="!isEdit[index]"
+              :value="meal.price"
+              disabled="true"
+              type="number"
+            />
             <input v-else v-model="meal.price" />
           </td>
           <td>
@@ -26,6 +31,7 @@
               v-if="!isEdit[index]"
               :value="meal.quantity"
               disabled="true"
+              type="number"
             />
             <input v-else v-model="meal.quantity" />
           </td>
@@ -36,7 +42,7 @@
             <button v-else @click="onEdit(index, meal)">Finish</button>
           </td>
           <td>
-            <button @click="onDelete(meal)">delete</button>
+            <button @click="onDelete(index, meal)">delete</button>
           </td>
         </tr>
       </tbody>
@@ -64,13 +70,14 @@ export default {
       console.log(res.data);
       this.$store.dispatch("meals", res.data);
     },
-    onDelete(meal) {
+    onDelete(index, meal) {
       axios
         .post(`/deletemeal`, {
           mealname: meal.name,
           shopname: this.shop.shopname,
         })
         .then(() => {
+          this.isEdit[index] = false;
           this.getMeals();
         });
     },
@@ -87,15 +94,17 @@ export default {
         .then(() => {
           let checker = (item) => item === false;
           if (this.isEdit.every(checker)) this.getMeals();
+        })
+        .catch((error) => {
+          const response = error.response.data.message;
+          alert(response);
+          return;
         });
     },
   },
 
   computed: {
     ...mapState(["shop", "meals"]),
-    isEditing(index) {
-      return this.isEdit[index.toString()];
-    },
   },
 };
 </script>
