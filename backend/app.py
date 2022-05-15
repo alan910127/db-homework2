@@ -194,12 +194,16 @@ def addMeal():
     quantity = request.json["quantity"]
     shopname = request.json['shopname']
     image = request.json["image"]
+    if image is None:
+        image = "https://i.imgur.com/QnhW8Vu.png"
+    if price is None or quantity is None or mealname is None:
+        return ({'message': "The given data was invalid."}, 444)
 
-    meal = Meal(mealname, shopname, image, price, quantity)
-    db.session.add(meal)
+    mealData = Meal(mealname, shopname, image, price, quantity)
+    db.session.add(mealData)
     db.session.commit()
-
-    return mealSchema.jsonify(meal)
+    return mealSchema.jsonify(mealData)
+  
 
 
 @app.route('/getmeal/<shopname>', methods=['GET'])
@@ -226,7 +230,7 @@ def editMeal():
     mealname = request.json["mealname"]
     price = request.json["price"]
     quantity = request.json["quantity"]
-
+    
     Meal.query.filter_by(shopname=shopname, name=mealname).update({'price': price, 'quantity': quantity})
     db.session.commit()
     return ({'message': "The meal has been edited."}, 200)
