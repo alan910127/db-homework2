@@ -48,7 +48,10 @@ export default {};
     padding: 32px;
     margin: 20%;
     border-radius: 8px;
-
+    svg {
+      position: flex;
+      cursor: pointer;
+    }
     #close {
       cursor: pointer;
     }
