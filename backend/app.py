@@ -158,26 +158,27 @@ def getShop():
     pattern = f'%{ meal }%' 
     # meal can be filtered even if no present in input
 
-    if condition == 0:
+    if condition == 3:
         '''
-        filtered: nothing
+        filtered: pricelow + pricehigh
         '''
-        subQuery = Shop.query.filter(Shop.shopname.ilike(pattern)).with_entities(Shop.shopname)
-    elif condition == 1:
-        '''
-        filtered: pricelow
-        '''
-        subQuery = Meal.query.filter(Meal.price >= pricelow, Meal.shopname.ilike(pattern)).with_entities(Meal.shopname).distinct()
+        subQuery = Meal.query.filter(Meal.price >= pricelow, Meal.price <= pricehigh, Meal.shopname.ilike(pattern)).with_entities(Shop.shopname).distinct()
     elif condition == 2:
         '''
         filtered: pricehigh
         '''
         subQuery = Meal.query.filter(Meal.price <= pricehigh, Meal.shopname.ilike(pattern)).with_entities(Shop.shopname).distinct()
-    elif condition == 3:
+    elif condition == 1:
         '''
-        filtered: pricelow + pricehigh
+        filtered: pricelow
         '''
-        subQuery = Meal.query.filter(Meal.price >= pricelow, Meal.price <= pricehigh, Meal.shopname.ilike(pattern)).with_entities(Shop.shopname).distinct()
+        subQuery = Meal.query.filter(Meal.price >= pricelow, Meal.shopname.ilike(pattern)).with_entities(Meal.shopname).distinct()
+    else:
+        '''
+        filtered: nothing
+        '''
+        subQuery = Shop.query.filter(Shop.shopname.ilike(pattern)).with_entities(Shop.shopname)
+    
 
     print(f'{subQuery.all()=}')
 
