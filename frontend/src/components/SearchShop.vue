@@ -80,6 +80,7 @@
 
 <script>
 import axios from "axios";
+import { mapState } from "vuex";
 
 export default {
   data() {
@@ -97,6 +98,7 @@ export default {
   methods: {
     async onSubmit() {
       const response = await axios.post("/getshop", {
+        account: this.user.account,
         shopname: this.form.shopname,
         distance: this.form.distance,
         pricelow: this.form.pricelow,
@@ -112,6 +114,9 @@ export default {
     getInputClass(field) {
       return this.form[field] ? "filled" : "";
     },
+  },
+  computed: {
+    ...mapState(["user"]),
   },
 };
 </script>
