@@ -153,8 +153,8 @@ def getShop():
     pricehigh = request.json["pricehigh"]
     meal = request.json["meal"]
     category = request.json["category"]
-    lng = request.json["longitude"]
-    lat = request.json["latitude"]
+    longitude = request.json["longitude"]
+    latitude = request.json["latitude"]
 
     condition = (2 if pricehigh else 0) | (1 if pricelow else 0)
     pattern = f'%{ meal }%' 
@@ -197,12 +197,12 @@ def getShop():
         subQuery = Shop.query.filter(
                         Shop.shopname.in_(subQuery),
                         
-                        func.abs( 6378.137 * ( 2 * func.asin( func.sqrt( func.pow( func.sin( (func.radians(lat) - func.radians(Shop.latitude)) / 2 ), 2 ) + \
-                        func.cos( func.radians(lat) ) * func.cos( func.radians(Shop.latitude) ) * func.pow( func.sin( (func.radians(lng) - func.radians(Shop.longitude)) / 2 ), 2 ) ) ) ) ) > lower_bound,
+                        func.abs( 6378.137 * ( 2 * func.asin( func.sqrt( func.pow( func.sin( (func.radians(latitude) - func.radians(Shop.latitude)) / 2 ), 2 ) + \
+                        func.cos( func.radians(latitude) ) * func.cos( func.radians(Shop.latitude) ) * func.pow( func.sin( (func.radians(longitude) - func.radians(Shop.longitude)) / 2 ), 2 ) ) ) ) ) > lower_bound,
 
-                        func.abs( 6378.137 * ( 2 * func.asin( func.sqrt( func.pow( func.sin( (func.radians(lat) - func.radians(Shop.latitude)) / 2 ), 2 ) + \
-                        func.cos( func.radians(lat) ) * func.cos( func.radians(Shop.latitude) ) * func.pow( func.sin( (func.radians(lng) - func.radians(Shop.longitude)) / 2 ), 2 ) ) ) ) ) <= upper_bound
-                    )
+                        func.abs( 6378.137 * ( 2 * func.asin( func.sqrt( func.pow( func.sin( (func.radians(latitude) - func.radians(Shop.latitude)) / 2 ), 2 ) + \
+                        func.cos( func.radians(latitude) ) * func.cos( func.radians(Shop.latitude) ) * func.pow( func.sin( (func.radians(longitude) - func.radians(Shop.longitude)) / 2 ), 2 ) ) ) ) ) <= upper_bound
+                    ).with_entities(Shop.shopname).distinct()
 
     shopListData =  Shop.query.filter(
                         Shop.shopname.ilike(f'%{ shopname }%'), 
