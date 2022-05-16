@@ -13,10 +13,10 @@
           <td>{{ index + 1 }}</td>
           <td>{{ shop.shopname }}</td>
           <td>
-            <popup-window v-if="showPopup" @closePopup="showPopup = false">
+            <popup-window v-if="shop.show" @closePopup="shop.show = false">
               <menu-page :shop="shop"></menu-page>
             </popup-window>
-            <button @click="showPopup = true">Show Popup</button>
+            <button @click="shop.show = true">Menu</button>
           </td>
         </tr>
       </tbody>
@@ -38,7 +38,7 @@ export default {
     MenuPage,
   },
   data() {
-    return { showPopup: false };
+    return {};
   },
 };
 </script>
