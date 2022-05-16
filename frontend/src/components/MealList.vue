@@ -19,30 +19,25 @@
           <td>{{ meal.name }}</td>
           <td>
             <input
-              v-if="!isEdit[index]"
-              :value="meal.price"
-              disabled="true"
+              v-model="meal.price"
+              :disabled="!meal.isEdit"
               type="number"
             />
-            <input v-else v-model="meal.price" />
           </td>
           <td>
             <input
-              v-if="!isEdit[index]"
-              :value="meal.quantity"
-              disabled="true"
+              v-model="meal.quantity"
+              :disabled="!meal.isEdit"
               type="number"
             />
-            <input v-else v-model="meal.quantity" />
           </td>
           <td>
-            <button v-if="!isEdit[index]" @click="isEdit[index] = true">
-              Edit
+            <button @click="editOnClick(meal)">
+              {{ getEditButtonTag(meal) }}
             </button>
-            <button v-else @click="onEdit(index, meal)">Finish</button>
           </td>
           <td>
-            <button @click="onDelete(index, meal)">delete</button>
+            <button @click="onDelete(meal)">delete</button>
           </td>
         </tr>
       </tbody>
@@ -57,52 +52,48 @@ import { mapState } from "vuex";
 export default {
   created() {
     this.getMeals();
-    console.log(this.isEdit);
   },
   data() {
-    return {
-      isEdit: [],
-    };
+    return {};
   },
   methods: {
+    getEditButtonTag(meal) {
+      return meal.isEdit ? "Finish" : "Edit";
+    },
     async getMeals() {
-      const res = await axios.get(`/getmeal/${this.shop.shopname}`);
-      console.log(res.data);
-      this.$store.dispatch("meals", res.data);
+      const response = await axios.get(`/getmeal/${this.shop.shopname}`);
+      this.$store.dispatch("meals", response.data);
     },
-    onDelete(index, meal) {
-      axios
-        .post(`/deletemeal`, {
-          mealname: meal.name,
-          shopname: this.shop.shopname,
-        })
-        .then(() => {
-          this.isEdit[index] = false;
-          this.getMeals();
-        });
+    async onDelete(meal) {
+      await axios.post(`/deletemeal`, {
+        mealname: meal.name,
+        shopname: this.shop.shopname,
+      });
+      this.getMeals();
     },
-    onEdit(index, meal) {
-      console.log(this.isEdit);
-      this.isEdit[index] = false;
-      axios
-        .post(`/editmeal`, {
-          mealname: meal.name,
-          price: meal.price,
-          quantity: meal.quantity,
-          shopname: this.shop.shopname,
-        })
-        .then(() => {
-          let checker = (item) => item === false;
-          if (this.isEdit.every(checker)) this.getMeals();
-        })
-        .catch((error) => {
-          const response = error.response.data.message;
-          alert(response);
-          return;
-        });
+    async editOnClick(meal) {
+      meal.isEdit = !meal.isEdit;
+      if (meal.isEdit) return;
+
+      const numEditing = this.meals.filter((m) => m.isEdit).length;
+
+      if (numEditing === 0) {
+        await axios
+          .post(`/editmeal`, {
+            mealname: meal.name,
+            price: meal.price,
+            quantity: meal.quantity,
+            shopname: this.shop.shopname,
+          })
+          .catch((error) => {
+            const message = error.response.data.message;
+            alert(message);
+            return;
+          });
+        this.getMeals();
+      }
     },
   },
-
   computed: {
     ...mapState(["shop", "meals"]),
   },

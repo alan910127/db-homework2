@@ -71,20 +71,19 @@ export default {
           shopname: this.shop.shopname,
           image: this.form.image,
         })
-        .then(() => {
-          alert("added successfully!");
-          this.form.mealname = "";
-          this.form.price = null;
-          this.form.quantity = null;
-          this.form.image = null;
-          this.getMeals();
-          document.getElementById("file").value = "";
-        })
         .catch((error) => {
           const response = error.response.data.message;
           alert(response);
           return;
         });
+
+      alert("added successfully!");
+      this.form.mealname = "";
+      this.form.price = null;
+      this.form.quantity = null;
+      this.form.image = null;
+      this.getMeals();
+      document.getElementById("file").value = "";
     },
     onFileChange(event) {
       const file = event.target.files[0];
