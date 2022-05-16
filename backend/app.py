@@ -185,7 +185,6 @@ def getShop():
         '''
         subQuery = Shop.query.with_entities(Shop.shopname)
 
-    func = db.func
     if distance:
         if distance == 'near':
             lower_bound, upper_bound = -1, 1
@@ -194,6 +193,7 @@ def getShop():
         else:
             lower_bound, upper_bound = 3, 8
 
+        func = db.func
         subQuery = Shop.query.filter(
                         Shop.shopname.in_(subQuery),
                         
