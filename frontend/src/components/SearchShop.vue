@@ -7,6 +7,7 @@
           name="shopname"
           id="shopname"
           type="text"
+          :class="getInputClass('shopname')"
         />
         <label for="shopname" class="placeholder">
           <span>Shop Name</span>
@@ -18,40 +19,43 @@
           <option>middle</option>
           <option>far</option>
         </select>
-        <label for="distance" class="placeholder">
+        <!-- <label for="distance" class="placeholder">
           <span>Distance</span>
+        </label> -->
+      </div>
+
+      <div class="input">
+        <input
+          v-model.lazy.trim="form.pricelow"
+          name="pricelow"
+          id="pricelow"
+          type="number"
+          :class="getInputClass('pricelow')"
+        />
+        <label for="pricelow" class="placeholder">
+          <span>Lowest Price</span>
         </label>
       </div>
-      <div id="price">
-        <div class="input">
-          <input
-            v-model.lazy.trim="form.pricelow"
-            name="pricelow"
-            id="pricelow"
-            type="number"
-          />
-          <label for="pricelow" class="placeholder">
-            <span>Lowest Price</span>
-          </label>
-        </div>
-        <div class="input">
-          <input
-            v-model.lazy.trim="form.pricehigh"
-            name="pricehigh"
-            id="pricehigh"
-            type="number"
-          />
-          <label for="pricehigh" class="placeholder">
-            <span>Highest Price</span>
-          </label>
-        </div>
+      <div class="input">
+        <input
+          v-model.lazy.trim="form.pricehigh"
+          name="pricehigh"
+          id="pricehigh"
+          type="number"
+          :class="getInputClass('pricehigh')"
+        />
+        <label for="pricehigh" class="placeholder">
+          <span>Highest Price</span>
+        </label>
       </div>
+
       <div class="input">
         <input
           v-model.lazy.trim="form.meal"
           name="meal"
           id="meal"
           type="text"
+          :class="getInputClass('meal')"
         />
         <label for="meal" class="placeholder">
           <span>Meal</span>
@@ -63,6 +67,7 @@
           name="category"
           id="category"
           type="text"
+          :class="getInputClass('category')"
         />
         <label for="category" class="placeholder">
           <span>Category</span>
@@ -104,51 +109,57 @@ export default {
 
       this.$store.dispatch("shops", response.data);
     },
+    getInputClass(field) {
+      return this.form[field] ? "filled" : "";
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 @import "@/styles/global.scss";
-
-.drop-down-menu {
-  position: relative;
-  @include flex;
-
-  select {
-    border: 2px solid var(--secondary-color);
-    border-radius: 8px;
-    background-color: var(--secondary-color);
-    outline: none;
-    color: var(--text-color);
-    padding: 10px 12px;
-    box-sizing: border-box;
-    font-size: 14px;
-    transition: all 0.3s ease;
-
-    &:focus,
-    &:hover,
-    &.filled {
-      border: 2px solid var(--info-color);
-    }
-
-    &:focus + .placeholder span,
-    &.filled + .placeholder span {
-      transform: translateY(-100%);
-    }
-  }
-  .placeholder {
+.beautiful-form {
+  @include flex-row;
+  width: auto;
+  .drop-down-menu {
+    position: relative;
     @include flex;
-    position: absolute;
-    width: calc(100% - 24px);
-    top: 10px;
-    left: 12px;
-    pointer-events: none;
-    overflow: hidden;
 
-    span {
-      transition: all 0.3s ease;
+    select {
+      border: 2px solid var(--secondary-color);
+      border-radius: 8px;
+      background-color: var(--secondary-color);
+      outline: none;
+      color: var(--text-color);
+      padding: 10px 12px;
+      box-sizing: border-box;
       font-size: 14px;
+      transition: all 0.3s ease;
+
+      &:focus,
+      &:hover,
+      &.filled {
+        border: 2px solid var(--info-color);
+      }
+
+      &:focus + .placeholder span,
+      &.filled + .placeholder span {
+        transform: translateY(-100%);
+      }
+    }
+    .placeholder {
+      @include flex;
+      position: absolute;
+      width: calc(100% - 24px);
+      top: 10px;
+      left: 12px;
+      pointer-events: none;
+      overflow: hidden;
+
+      span {
+        transition: all 0.3s ease;
+        font-size: 14px;
+      }
     }
   }
 }
