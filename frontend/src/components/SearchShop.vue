@@ -26,7 +26,7 @@
 
       <div class="input">
         <input
-          v-model.lazy.trim="form.pricelow"
+          v-model.lazy="form.pricelow"
           name="pricelow"
           id="pricelow"
           type="number"
@@ -38,7 +38,7 @@
       </div>
       <div class="input">
         <input
-          v-model.lazy.trim="form.pricehigh"
+          v-model.lazy="form.pricehigh"
           name="pricehigh"
           id="pricehigh"
           type="number"
