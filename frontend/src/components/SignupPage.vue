@@ -170,6 +170,7 @@ export default {
         longitude: this.form.longitude,
       });
 
+      alert("Registration succeed!");
       this.$router.push({ name: "signin" });
     },
     getInputClass(fieldName) {
