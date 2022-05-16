@@ -123,6 +123,14 @@ export default {
       top: 10px;
       overflow: hidden;
     }
+
+    input:disabled {
+      &:focus,
+      &:hover {
+        border: 2px solid var(--secondary-color);
+        cursor: not-allowed;
+      }
+    }
   }
 }
 </style>

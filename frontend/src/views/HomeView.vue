@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <side-bar />
-    <router-view />
+    <router-view class="router-view" />
   </div>
 </template>
 
@@ -45,6 +45,10 @@ export default {
 .home {
   display: flex;
   gap: 3%;
+
+  .router-view {
+    margin-top: 20px;
+  }
 
   main {
     flex: 1 1 0;
