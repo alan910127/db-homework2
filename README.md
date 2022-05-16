@@ -3,6 +3,15 @@
 > Topic: Food Ordering Service part.1 <br>
 > Deadline: 2022/05/20 23:59
 
+## TODO
+
+- add Distance to shopList
+- profile location edit
+- order search results
+- show 5 result in single page
+- shop registration validation
+- add meal validation
+
 ## Virtual Environment Setup
 
 1. Change directory to this repo directory. 
