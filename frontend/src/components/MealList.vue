@@ -75,7 +75,7 @@ export default {
       meal.isEdit = !meal.isEdit;
       if (meal.isEdit) return;
 
-      const numEditing = this.meals.filter((m) => m.isEdit).length;
+      const numEditing = this.meals.filter((m) => m.isEdit === true).length;
 
       if (numEditing === 0) {
         await axios
