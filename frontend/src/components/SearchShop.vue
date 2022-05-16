@@ -19,9 +19,6 @@
           <option>middle</option>
           <option>far</option>
         </select>
-        <!-- <label for="distance" class="placeholder">
-          <span>Distance</span>
-        </label> -->
       </div>
 
       <div class="input">
