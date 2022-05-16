@@ -154,30 +154,35 @@ def getShop():
     meal = request.json["meal"]
     category = request.json["category"]
 
-    condition = (1 if pricelow else 0) | (2 if pricehigh else 0)
+    condition = (2 if pricehigh else 0) | (1 if pricelow else 0)
     pattern = f'%{ meal }%' 
-    # meal can be filtered even if no present in input
 
     if condition == 3:
         '''
-        filtered: pricelow + pricehigh
+        filtered: (meal?) pricelow + pricehigh
         '''
-        subQuery = Meal.query.filter(Meal.price >= pricelow, Meal.price <= pricehigh, Meal.shopname.ilike(pattern)).with_entities(Shop.shopname).distinct()
+        subQuery = Meal.query.filter(Meal.price >= pricelow, Meal.price <= pricehigh).with_entities(Shop.shopname).distinct()
     elif condition == 2:
         '''
-        filtered: pricehigh
+        filtered: (meal?) pricehigh
         '''
-        subQuery = Meal.query.filter(Meal.price <= pricehigh, Meal.shopname.ilike(pattern)).with_entities(Shop.shopname).distinct()
+        subQuery = Meal.query.filter(Meal.price <= pricehigh, Meal.name.ilike(pattern)).with_entities(Shop.shopname).distinct()
     elif condition == 1:
         '''
-        filtered: pricelow
+        filtered: (meal?) pricelow
         '''
-        subQuery = Meal.query.filter(Meal.price >= pricelow, Meal.shopname.ilike(pattern)).with_entities(Meal.shopname).distinct()
+        subQuery = Meal.query.filter(Meal.price >= pricelow, Meal.name.ilike(pattern)).with_entities(Meal.shopname).distinct()
+    elif meal:
+        '''
+        filtered: meal
+        '''
+        subQuery = Meal.query.filter(Meal.name.ilike(pattern)).with_entities(Meal.shopname).distinct()
     else:
         '''
         filtered: nothing
         '''
-        subQuery = Shop.query.filter(Shop.shopname.ilike(pattern)).with_entities(Shop.shopname)
+        subQuery = Shop.query.with_entities(Shop.shopname)
+
     
 
     print(f'{subQuery.all()=}')
