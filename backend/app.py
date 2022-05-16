@@ -153,6 +153,8 @@ def getShop():
     pricehigh = request.json["pricehigh"]
     meal = request.json["meal"]
     category = request.json["category"]
+    lng = request.json["longitude"]
+    lat = request.json["latitude"]
 
     condition = (2 if pricehigh else 0) | (1 if pricelow else 0)
     pattern = f'%{ meal }%' 
@@ -183,9 +185,24 @@ def getShop():
         '''
         subQuery = Shop.query.with_entities(Shop.shopname)
 
-    
+    func = db.func
+    if distance:
+        if distance == 'near':
+            lower_bound, upper_bound = -1, 1
+        elif distance == 'middle':
+            lower_bound, upper_bound = 1, 3
+        else:
+            lower_bound, upper_bound = 3, 8
 
-    print(f'{subQuery.all()=}')
+        subQuery = Shop.query.filter(
+                        Shop.shopname.in_(subQuery),
+                        
+                        func.abs( 6378.137 * ( 2 * func.asin( func.sqrt( func.pow( func.sin( (func.radians(lat) - func.radians(Shop.latitude)) / 2 ), 2 ) + \
+                        func.cos( func.radians(lat) ) * func.cos( func.radians(Shop.latitude) ) * func.pow( func.sin( (func.radians(lng) - func.radians(Shop.longitude)) / 2 ), 2 ) ) ) ) ) > lower_bound,
+
+                        func.abs( 6378.137 * ( 2 * func.asin( func.sqrt( func.pow( func.sin( (func.radians(lat) - func.radians(Shop.latitude)) / 2 ), 2 ) + \
+                        func.cos( func.radians(lat) ) * func.cos( func.radians(Shop.latitude) ) * func.pow( func.sin( (func.radians(lng) - func.radians(Shop.longitude)) / 2 ), 2 ) ) ) ) ) <= upper_bound
+                    )
 
     shopListData =  Shop.query.filter(
                         Shop.shopname.ilike(f'%{ shopname }%'), 

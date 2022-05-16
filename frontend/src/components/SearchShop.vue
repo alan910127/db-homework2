@@ -105,6 +105,8 @@ export default {
         pricehigh: this.form.pricehigh,
         meal: this.form.meal,
         category: this.form.category,
+        latitude: this.user.latitude,
+        longitude: this.user.longitude,
       });
 
       console.log(response.data);
