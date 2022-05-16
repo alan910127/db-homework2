@@ -5,6 +5,8 @@
         <tr>
           <th>#</th>
           <th>Shop Name</th>
+          <th>Category</th>
+          <th>Distance</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -12,6 +14,8 @@
         <tr v-for="(shop, index) in shops" :key="index" class="shop">
           <td>{{ index + 1 }}</td>
           <td>{{ shop.shopname }}</td>
+          <td>{{ shop.category }}</td>
+          <td>"distance"</td>
           <td>
             <popup-window v-if="shop.show" @closePopup="shop.show = false">
               <menu-page :shop="shop"></menu-page>
