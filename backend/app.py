@@ -20,14 +20,14 @@ ma = Marshmallow(app)
 
 class User(db.Model):
     __tablename__ = 'users'
-    realname = db.Column(db.String(255))
-    role = db.Column(db.String(10), default="user")
+    realname = db.Column(db.String(255), nullable=False)
+    role = db.Column(db.String(10), default="user", nullable=False)
     account = db.Column(db.String(255), primary_key=True)
-    phone = db.Column(db.String(10))
-    password = db.Column(db.String(73)) # salt(8) + $(1) + hash(64)
-    latitude = db.Column(db.Float)
-    longitude = db.Column(db.Float)
-    balance = db.Column(db.Integer, default=0)
+    phone = db.Column(db.String(10), nullable=False)
+    password = db.Column(db.String(73), nullable=False) # salt(8) + $(1) + hash(64)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    balance = db.Column(db.Integer, nullable=False, default=0)
     shopname = db.Column(db.String(255), db.ForeignKey('shops.shopname'), unique=True)
     shop = db.relationship("Shop", backref=db.backref("users", uselist=False))
 
@@ -42,9 +42,9 @@ class User(db.Model):
 class Shop(db.Model):
     __tablename__ = 'shops'
     shopname = db.Column(db.String(255), primary_key=True)
-    category = db.Column(db.String(255))
-    latitude = db.Column(db.Float)
-    longitude = db.Column(db.Float)
+    category = db.Column(db.String(255), nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
 
     def __init__(self, shopname, category, latitude, longitude):
         self.shopname = shopname
@@ -56,9 +56,9 @@ class Meal(db.Model):
     __tablename__ = 'meals'
     name = db.Column(db.String(255), primary_key=True)
     shopname = db.Column(db.String(255), db.ForeignKey('shops.shopname'), primary_key=True)
-    image = db.Column(db.TEXT)
-    price = db.Column(db.Integer)
-    quantity = db.Column(db.Integer)
+    image = db.Column(db.TEXT, nullable=False)
+    price = db.Column(db.Integer, nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
     shop = db.relationship("Shop")
 
     def __init__(self, name, shopname, image, price, quantity):
