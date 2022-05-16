@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Tonight, I want...</h3>
+    <h3>Tonight, I would like some...</h3>
     <search-shop />
     <shop-list />
   </div>
