@@ -36,6 +36,7 @@
           name="latitude"
           id="latitude"
           type="number"
+          step="0.000000000000001"
           v-if="user.role === 'user'"
           :class="getInputClass('latitude')"
         />
@@ -50,6 +51,7 @@
           name="longitude"
           id="longitude"
           type="number"
+          step="0.000000000000001"
           v-if="user.role === 'user'"
           :class="getInputClass('longitude')"
         />
