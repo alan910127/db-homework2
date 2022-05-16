@@ -7,11 +7,13 @@ from hashlib import sha256
 import os
 
 ALL_CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+BASE_DIR = os.path.abspath(os.getcwd())
+DB_NAME = 'db_homework.db'
 
 app = Flask(__name__)
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:////{ os.path.join(os.getcwd(), "db_homework.db") }'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{ BASE_DIR }/{ DB_NAME }'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -147,15 +149,35 @@ def getUser(account):
 def getShop():
     shopname = request.json["shopname"]
     distance = request.json["distance"]
-    pricelow = (lambda x: int(x) if x else 0)(request.json["pricelow"])
-    pricehigh = (lambda x: int(x) if x else 10 ** 300)(request.json["pricehigh"])
+    pricelow = request.json["pricelow"]
+    pricehigh = request.json["pricehigh"]
     meal = request.json["meal"]
     category = request.json["category"]
 
-    print(request.json)
+    condition = (1 if pricelow else 0) | (2 if pricehigh else 0)
+    pattern = f'%{ meal }%' 
+    # meal can be filtered even if no present in input
 
-    subQuery = Meal.query.filter(Meal.price >= pricelow, Meal.price <= pricehigh, Meal.name.ilike(f'%{ meal }%')) \
-                    .with_entities(Meal.shopname).distinct()
+    if condition == 0:
+        '''
+        filtered: nothing
+        '''
+        subQuery = Shop.query.filter(Shop.shopname.ilike(pattern)).with_entities(Shop.shopname)
+    elif condition == 1:
+        '''
+        filtered: pricelow
+        '''
+        subQuery = Meal.query.filter(Meal.price >= pricelow, Meal.shopname.ilike(pattern)).with_entities(Meal.shopname).distinct()
+    elif condition == 2:
+        '''
+        filtered: pricehigh
+        '''
+        subQuery = Meal.query.filter(Meal.price <= pricehigh, Meal.shopname.ilike(pattern)).with_entities(Shop.shopname).distinct()
+    elif condition == 3:
+        '''
+        filtered: pricelow + pricehigh
+        '''
+        subQuery = Meal.query.filter(Meal.price >= pricelow, Meal.price <= pricehigh, Meal.shopname.ilike(pattern)).with_entities(Shop.shopname).distinct()
 
     print(f'{subQuery.all()=}')
 
