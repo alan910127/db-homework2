@@ -30,6 +30,9 @@ import PopupWindow from "@/components/PopupWindow.vue";
 import MenuPage from "@/components/MenuPage.vue";
 
 export default {
+  created() {
+    this.$store.dispatch("shops", []);
+  },
   computed: {
     ...mapState(["shops"]),
   },
