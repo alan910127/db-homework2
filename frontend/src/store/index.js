@@ -7,7 +7,7 @@ export default createStore({
     user: null,
     shops: [],
     shop: null,
-    meals: []
+    meals: [],
   },
   getters: {
     user: (state) => state.user,
@@ -27,7 +27,7 @@ export default createStore({
     },
     meals(state, meals) {
       state.meals = meals;
-    }
+    },
   },
   actions: {
     user(context, user) {
@@ -41,7 +41,7 @@ export default createStore({
     },
     meals(context, meals) {
       context.commit('meals', meals);
-    }
+    },
   },
   modules: {
   }
