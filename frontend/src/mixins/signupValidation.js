@@ -2,7 +2,7 @@ const LETTER_REGEX = /^[a-zA-Z]+$/
 const ALNUM_REGEX = /^[a-zA-Z0-9]+$/
 const PHONE_REGEX = /^09[0-9]+/
 
-const validationMixin = {
+const signupValidation = {
     data() {
         return {
             validationRules: {
@@ -67,4 +67,4 @@ const validationMixin = {
     }
 };
 
-export default validationMixin;
+export default signupValidation;

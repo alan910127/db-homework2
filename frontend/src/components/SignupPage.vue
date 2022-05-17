@@ -135,7 +135,7 @@
 </template>
 
 <script>
-import validationMixin from "@/mixins/validationMixin.js";
+import signupValidation from "@/mixins/signupValidation.js";
 import axios from "axios";
 
 export default {
@@ -155,6 +155,17 @@ export default {
   },
   methods: {
     async onSubmit() {
+      for (const property in this.form) {
+        const inputErrors = this.validateField(property, this.form[property]);
+        if (inputErrors && inputErrors.length) {
+          this.errors[property] = inputErrors;
+        } else {
+          this.errors[property] = null;
+        }
+      }
+
+      if (this.buttonClass) return;
+
       if (this.form.password !== this.form.confirm) {
         alert("Please check your password!");
         this.form.password = this.form.confirm = "";
@@ -174,20 +185,20 @@ export default {
       this.$router.push({ name: "signin" });
     },
     getInputClass(fieldName) {
-      if (fieldName !== "longitude" && fieldName !== "latitude")
+      if (fieldName !== "longitude" && fieldName !== "latitude") {
         return (
           (this.form[fieldName].length ? "filled" : "") +
           (this.errors[fieldName] && this.errors[fieldName].length
             ? " danger"
             : "")
         );
-      else
-        return (
-          (this.form[fieldName] !== null ? "filled" : "") +
-          (this.errors[fieldName] && this.errors[fieldName].length
-            ? " danger"
-            : "")
-        );
+      }
+      return (
+        (this.form[fieldName] !== null ? "filled" : "") +
+        (this.errors[fieldName] && this.errors[fieldName].length
+          ? " danger"
+          : "")
+      );
     },
     async onInputChange(e, field) {
       const inputValue = e.target.value;
@@ -226,7 +237,7 @@ export default {
       return false;
     },
   },
-  mixins: [validationMixin],
+  mixins: [signupValidation],
 };
 </script>
 
