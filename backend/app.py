@@ -240,7 +240,7 @@ def addMeal():
     shopname = request.json['shopname']
     image = request.json["image"]
     if image is None:
-        image = "https://i.imgur.com/QnhW8Vu.png"
+        return ({'message': "The image is not uploaded."}, 444)
     if price is None or quantity is None or mealname is None:
         return ({'message': "The given data was invalid."}, 444)
 

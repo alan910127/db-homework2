@@ -15,7 +15,7 @@
           <td>{{ index + 1 }}</td>
           <td>{{ shop.shopname }}</td>
           <td>{{ shop.category }}</td>
-          <td>"distance"</td>
+          <td>{{ getDistance(shop) }}</td>
           <td>
             <popup-window v-if="shop.show" @closePopup="shop.show = false">
               <menu-page :shop="shop"></menu-page>
@@ -32,13 +32,35 @@
 import { mapState } from "vuex";
 import PopupWindow from "@/components/PopupWindow.vue";
 import MenuPage from "@/components/MenuPage.vue";
+import haversine from "haversine";
 
 export default {
   created() {
     this.$store.dispatch("shops", []);
   },
+  methods: {
+    getDistance(shop) {
+      const distance = haversine(
+        {
+          latitude: this.user.latitude,
+          longitude: this.user.longitude,
+        },
+        {
+          latitude: shop.latitude,
+          longitude: shop.longitude,
+        },
+        { unit: "kilometer" }
+      );
+
+      let result = "";
+      if (distance <= 1.0) result = "near";
+      else if (distance > 1.0 && distance <= 3.0) result = "middle";
+      else result = "far";
+      return result;
+    },
+  },
   computed: {
-    ...mapState(["shops"]),
+    ...mapState(["shops", "user"]),
   },
   components: {
     PopupWindow,
