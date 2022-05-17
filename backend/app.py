@@ -239,10 +239,6 @@ def addMeal():
     quantity = request.json["quantity"]
     shopname = request.json['shopname']
     image = request.json["image"]
-    if image is None:
-        image = "https://i.imgur.com/QnhW8Vu.png"
-    if price is None or quantity is None or mealname is None:
-        return ({'message': "The given data was invalid."}, 444)
 
     mealData = Meal(mealname, shopname, image, price, quantity)
     db.session.add(mealData)
