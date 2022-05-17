@@ -8,7 +8,7 @@
 - profile location edit
 - order search results
 - show 5 result in single page
-- shop registration validation
+
 
 ## Virtual Environment Setup
 

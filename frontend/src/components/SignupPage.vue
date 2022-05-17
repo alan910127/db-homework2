@@ -3,7 +3,7 @@
     <form @submit.prevent="onSubmit">
       <div class="input">
         <input
-          v-model="form.realname"
+          v-model.lazy="form.realname"
           :class="getInputClass('realname')"
           @change="onInputChange($event, 'realname')"
           name="realname"
@@ -39,7 +39,7 @@
       </div>
       <div class="input">
         <input
-          v-model="form.phone"
+          v-model.lazy.trim="form.phone"
           :class="getInputClass('phone')"
           @change="onInputChange($event, 'phone')"
           name="phone"
@@ -57,7 +57,7 @@
       </div>
       <div class="input">
         <input
-          v-model="form.password"
+          v-model.lazy="form.password"
           :class="getInputClass('password')"
           @change="onInputChange($event, 'password')"
           name="password"
@@ -75,7 +75,7 @@
       </div>
       <div class="input">
         <input
-          v-model="form.confirm"
+          v-model.lazy="form.confirm"
           :class="getInputClass('confirm')"
           @change="onInputChange($event, 'confirm')"
           name="confirm"
@@ -93,7 +93,7 @@
       </div>
       <div class="input">
         <input
-          v-model="form.latitude"
+          v-model.lazy="form.latitude"
           :class="getInputClass('latitude')"
           @change="onInputChange($event, 'latitude')"
           name="latitude"
@@ -112,7 +112,7 @@
       </div>
       <div class="input">
         <input
-          v-model="form.longitude"
+          v-model.lazy="form.longitude"
           :class="getInputClass('longitude')"
           @change="onInputChange($event, 'longitude')"
           name="longitude"

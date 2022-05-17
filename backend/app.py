@@ -257,6 +257,13 @@ def getshop(account):
     shopData = Shop.query.filter_by(account=account).all()
     return shopSchema.jsonify(shopData)
 
+@app.route('/getshopname/<shopname>', methods=['GET'])
+def getShopname(shopname):
+    shopData = Shop.query.get(shopname)
+    if shopData is None: 
+        return ({'message': "The shopname has not been registered."}, 444)
+    return shopSchema.jsonify(shopData)
+
 @app.route('/deletemeal', methods=['POST'])
 def deleteMeal():
     shopname = request.json["shopname"]
