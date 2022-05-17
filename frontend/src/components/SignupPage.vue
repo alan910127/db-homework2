@@ -201,8 +201,7 @@ export default {
       );
     },
     async onInputChange(e, field) {
-      console.log(e);
-      const inputValue = this.form[field];
+      const inputValue = e.target.value;
       const inputErrors = this.validateField(field, inputValue);
 
       if (inputErrors && inputErrors.length) {
