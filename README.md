@@ -5,12 +5,10 @@
 
 ## TODO
 
-- add Distance to shopList
 - profile location edit
 - order search results
 - show 5 result in single page
-- shop registration validation
-- add meal validation
+
 
 ## Virtual Environment Setup
 

@@ -61,7 +61,7 @@ export default {
       return meal.isEdit ? "Finish" : "Edit";
     },
     async getMeals() {
-      const response = await axios.get(`/getmeal/${this.shop.shopname}`);
+      const response = await axios.get(`/getmeal/${this.user.shopname}`);
       this.$store.dispatch("meals", response.data);
     },
     async onDelete(meal) {
@@ -95,7 +95,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(["shop", "meals"]),
+    ...mapState(["user", "shop", "meals"]),
   },
 };
 </script>
