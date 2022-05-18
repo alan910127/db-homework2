@@ -8,12 +8,14 @@ export default createStore({
     shops: [],
     shop: null,
     meals: [],
+    searchFilter: {}
   },
   getters: {
     user: (state) => state.user,
     shops: (state) => state.shops,
     shop: (state) => state.shop,
     meals: (state) => state.meals,
+    searchFilter: (state) => state.searchFilter,
   },
   mutations: {
     user(state, user) {
@@ -28,6 +30,9 @@ export default createStore({
     meals(state, meals) {
       state.meals = meals;
     },
+    searchFilter(state, searchFilter) {
+      state.searchFilter = searchFilter;
+    }
   },
   actions: {
     user(context, user) {
@@ -41,6 +46,9 @@ export default createStore({
     },
     meals(context, meals) {
       context.commit('meals', meals);
+    },
+    searchFilter(context, searchFilter) {
+      context.commit('searchFilter', searchFilter);
     },
   },
   modules: {

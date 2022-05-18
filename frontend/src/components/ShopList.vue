@@ -4,9 +4,13 @@
       <thead>
         <tr>
           <th>#</th>
-          <th>Shop Name</th>
-          <th>Category</th>
-          <th>Distance</th>
+          |
+          <th class="clickable" @click="setOrder('shopname')">Shop Name</th>
+          |
+          <th class="clickable" @click="setOrder('category')">Category</th>
+          |
+          <th class="clickable" @click="setOrder('distance')">Distance</th>
+          |
           <th>Action</th>
         </tr>
       </thead>
@@ -30,6 +34,7 @@
 
 <script>
 import { mapState } from "vuex";
+import axios from "axios";
 import PopupWindow from "@/components/PopupWindow.vue";
 import MenuPage from "@/components/MenuPage.vue";
 import haversine from "haversine";
@@ -37,6 +42,17 @@ import haversine from "haversine";
 export default {
   created() {
     this.$store.dispatch("shops", []);
+  },
+  data() {
+    return {
+      page: 0,
+      orders: {
+        shopname: "asc",
+        category: "asc",
+        distance: "asc",
+        current: null,
+      },
+    };
   },
   methods: {
     getDistance(shop) {
@@ -55,19 +71,34 @@ export default {
       let result = "";
       if (distance <= 1.0) result = "near";
       else if (distance > 1.0 && distance <= 3.0) result = "middle";
-      else result = "far";
+      else if (distance <= 8.0) result = "far";
       return result;
+    },
+    setOrder(field) {
+      if (this.orders[field] === "asc") this.orders[field] = "desc";
+      else this.orders[field] = "asc";
+      this.orders.current = field;
+
+      let requestData = {
+        order: `${this.orders.current}$${this.orders[this.orders.current]}`,
+        page: this.page,
+      };
+      for (const property in this.searchFilter) {
+        requestData[property] = this.searchFilter[property];
+      }
+
+      console.log(this.searchFilter);
+      console.log(requestData);
+
+      axios.post("/getshop", requestData);
     },
   },
   computed: {
-    ...mapState(["shops", "user"]),
+    ...mapState(["shops", "user", "searchFilter"]),
   },
   components: {
     PopupWindow,
     MenuPage,
-  },
-  data() {
-    return {};
   },
 };
 </script>
@@ -84,6 +115,9 @@ table {
       background: #b9b6b6;
       th {
         text-align: center;
+        &.clickable {
+          cursor: pointer;
+        }
       }
     }
   }

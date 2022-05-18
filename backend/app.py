@@ -155,6 +155,8 @@ def getShop():
     category = request.json["category"]
     longitude = request.json["longitude"]
     latitude = request.json["latitude"]
+    orderCond = request.json["order"]
+    page = int(request.json["page"])
 
     condition = (2 if pricehigh else 0) | (1 if pricelow else 0)
     pattern = f'%{ meal }%' 
@@ -185,6 +187,8 @@ def getShop():
         '''
         subQuery = Shop.query.with_entities(Shop.shopname)
 
+    func = db.func
+
     if distance:
         if distance == 'near':
             lower_bound, upper_bound = -1, 1
@@ -193,7 +197,6 @@ def getShop():
         else:
             lower_bound, upper_bound = 3, 8
 
-        func = db.func
         subQuery = Shop.query.filter(
                         Shop.shopname.in_(subQuery),
                         
@@ -204,13 +207,42 @@ def getShop():
                         func.cos( func.radians(latitude) ) * func.cos( func.radians(Shop.latitude) ) * func.pow( func.sin( (func.radians(longitude) - func.radians(Shop.longitude)) / 2 ), 2 ) ) ) ) ) <= upper_bound
                     ).with_entities(Shop.shopname).distinct()
 
+    
     shopListData =  Shop.query.filter(
                         Shop.shopname.ilike(f'%{ shopname }%'), 
                         Shop.category.ilike(f'%{ category }%'),
-                        Shop.shopname.in_(subQuery)
-                    ).all()
+                        Shop.shopname.in_(subQuery),
+                        func.abs( 6378.137 * ( 2 * func.asin( func.sqrt( func.pow( func.sin( (func.radians(latitude) - func.radians(Shop.latitude)) / 2 ), 2 ) + \
+                        func.cos( func.radians(latitude) ) * func.cos( func.radians(Shop.latitude) ) * func.pow( func.sin( (func.radians(longitude) - func.radians(Shop.longitude)) / 2 ), 2 ) ) ) ) ) <= 8
+                    ).with_entities(Shop.shopname)
 
-    return shopListSchema.jsonify(shopListData)
+    if orderCond:
+        order, direction = orderCond.split('$')
+        if order == 'shopname':
+            if direction == 'asc':
+                result = Shop.query.filter(Shop.shopname.in_(shopListData)).order_by(Shop.shopname.asc())
+            else:
+                result = Shop.query.filter(Shop.shopname.in_(shopListData)).order_by(Shop.shopname.desc())
+        elif order == 'category':
+            if direction == 'asc':
+                result = Shop.query.filter(Shop.shopname.in_(shopListData)).order_by(Shop.category.asc())
+            else:
+                result = Shop.query.filter(Shop.shopname.in_(shopListData)).order_by(Shop.category.desc())
+        else:
+            if direction == 'asc':
+                result = Shop.query.filter(Shop.shopname.in_(shopListData)).order_by((
+                            func.abs( 6378.137 * ( 2 * func.asin( func.sqrt( func.pow( func.sin( (func.radians(latitude) - func.radians(Shop.latitude)) / 2 ), 2 ) + \
+                            func.cos( func.radians(latitude) ) * func.cos( func.radians(Shop.latitude) ) * func.pow( func.sin( (func.radians(longitude) - func.radians(Shop.longitude)) / 2 ), 2 ) ) ) ) ) 
+                        ).asc())
+            else:
+                result = Shop.query.filter(Shop.shopname.in_(shopListData)).order_by((
+                            func.abs( 6378.137 * ( 2 * func.asin( func.sqrt( func.pow( func.sin( (func.radians(latitude) - func.radians(Shop.latitude)) / 2 ), 2 ) + \
+                            func.cos( func.radians(latitude) ) * func.cos( func.radians(Shop.latitude) ) * func.pow( func.sin( (func.radians(longitude) - func.radians(Shop.longitude)) / 2 ), 2 ) ) ) ) ) 
+                        ).desc())
+    else:
+        result = Shop.query.filter(Shop.shopname.in_(shopListData))
+
+    return shopListSchema.jsonify(result.limit(5).offset(5 * (page - 1)).all())
 
 @app.route('/addshop', methods=['POST'])
 def addShop():

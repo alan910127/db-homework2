@@ -104,10 +104,23 @@ export default {
         category: this.form.category,
         latitude: this.user.latitude,
         longitude: this.user.longitude,
+        order: "",
+        page: 0,
       });
 
       console.log(response.data);
 
+      this.$store.dispatch("searchFilter", {
+        account: this.user.account,
+        shopname: this.form.shopname,
+        distance: this.form.distance,
+        pricelow: this.form.pricelow,
+        pricehigh: this.form.pricehigh,
+        meal: this.form.meal,
+        category: this.form.category,
+        latitude: this.user.latitude,
+        longitude: this.user.longitude,
+      });
       this.$store.dispatch("shops", response.data);
     },
     getInputClass(field) {
