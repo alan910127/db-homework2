@@ -120,7 +120,6 @@ export default {
         })
         .then((res) => {
           this.$store.dispatch("shop", res.data);
-          console.log(res.data);
           return;
         })
         .catch((error) => {
@@ -159,7 +158,6 @@ export default {
 
       if (field === "shopname") {
         const response = await axios.get(`/getshopname/${inputValue}`);
-        console.log(response.data);
         if (Object.keys(response.data).length !== 0) {
           this.errors[field] = [
             ...(this.errors[field] ? this.errors[field] : []),
