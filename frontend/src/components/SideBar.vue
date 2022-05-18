@@ -141,33 +141,56 @@
             </svg>
             {{ user.phone }}
             <br />
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              fill="currentColor"
-              class="bi bi-geo-alt-fill"
-              viewBox="0 0 16 16"
-            >
-              <path
-                d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"
-              />
-            </svg>
-            {{ user.latitude }}, {{ user.longitude }}
-            <span class="edit" @click="onClick('edit')">
+            <form @submit.prevent="onClick">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
+                width="24"
+                height="24"
                 fill="currentColor"
-                class="bi bi-pencil-fill"
+                class="bi bi-geo-alt-fill"
                 viewBox="0 0 16 16"
               >
                 <path
-                  d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"
+                  d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"
                 />
               </svg>
-            </span>
+              <div class="location">
+                <div class="lat">
+                  <label for="lat">lat </label>
+                  <input
+                    type="number"
+                    step="0.000000000000001"
+                    v-model="form.latitude"
+                    :disabled="!isEdit"
+                    id="lat"
+                  />
+                </div>
+                <div class="lng">
+                  <label for="long">lng </label>
+                  <input
+                    type="number"
+                    step="0.000000000000001"
+                    v-model="form.longitude"
+                    :disabled="!isEdit"
+                    id="long"
+                  />
+                </div>
+              </div>
+              <span class="edit" @click="onClick()">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-pencil-fill"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"
+                  />
+                </svg>
+              </span>
+            </form>
             <br />
           </span>
         </span>
@@ -200,10 +223,19 @@
 
 <script>
 import { mapState } from "vuex";
+import axios from "axios";
 
 export default {
+  created() {
+    this.form.latitude = this.user.latitude;
+    this.form.longitude = this.user.longitude;
+  },
   data() {
-    return { isExpanded: false };
+    return {
+      isExpanded: false,
+      form: { latitude: 0, longitude: 0 },
+      isEdit: false,
+    };
   },
   methods: {
     toggleMenu() {
@@ -213,8 +245,19 @@ export default {
       this.$store.dispatch("user", null);
       this.$router.push({ name: "signin" });
     },
-    onClick(who) {
-      console.log(who);
+    async onClick() {
+      this.isEdit = !this.isEdit;
+      if (!this.isEdit) {
+        await axios
+          .post("/location", {
+            account: this.user.account,
+            latitude: this.form.latitude,
+            longitude: this.form.longitude,
+          })
+          .then((res) => {
+            this.$store.dispatch("user", res.data);
+          });
+      }
     },
   },
   computed: {
@@ -343,6 +386,24 @@ aside {
       .text {
         color: var(--text-color);
         transition: 0.3s ease-out;
+      }
+    }
+    form {
+      @include flex-row;
+      align-items: center;
+
+      .location {
+        @include flex;
+        align-content: flex-start;
+
+        .lat .lng {
+          @include flex-row;
+        }
+      }
+
+      input {
+        border: none;
+        width: 50%;
       }
     }
 
