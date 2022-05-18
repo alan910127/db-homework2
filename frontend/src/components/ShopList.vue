@@ -72,6 +72,8 @@ export default {
       if (distance <= 1.0) result = "near";
       else if (distance > 1.0 && distance <= 3.0) result = "middle";
       else if (distance <= 8.0) result = "far";
+      else result = "unavailable";
+
       return result;
     },
     setOrder(field) {
