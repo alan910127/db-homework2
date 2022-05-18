@@ -3,7 +3,7 @@
     <div class="input">
       <input
         v-model="form.account"
-        @change="onInputChange($evnet, 'account')"
+        @change="onInputChange($event, 'account')"
         :class="getInputClass('account')"
         name="account"
         id="account"
@@ -21,7 +21,7 @@
     <div class="input">
       <input
         v-model="form.password"
-        @change="onInputChange($evnet, 'password')"
+        @change="onInputChange($event, 'password')"
         :class="getInputClass('password')"
         name="password"
         id="password"
@@ -67,28 +67,25 @@ export default {
 
       if (this.buttonClass) return;
 
-      const response = await axios
-        .post("/login", {
+      try {
+        const response = await axios.post("/login", {
           account: this.form.account,
           password: this.form.password,
-        })
-        .catch((error) => {
-          const status = error.response.status;
-          if (status === 444) {
-            // user-defined error
-            alert(error.response.data.error);
-            this.form.account = this.form.password = "";
-            return;
-          } else {
-            throw error;
-          }
         });
+        console.log(response.data);
+        this.$store.dispatch("user", response.data);
+      } catch (error) {
+        const status = error.response.status;
+        if (status === 444) {
+          // user-defined error
+          alert(error.response.data.error);
+          this.form.account = this.form.password = "";
+        }
+        return;
+      }
 
-      console.log(response.data);
-
-      this.$store.dispatch("user", response.data);
-
-      console.log(this.$store.state.user);
+      const response = await axios.get(`/getshop/${this.form.account}`);
+      this.$store.dispatch("shop", response.data);
 
       this.$router.push({ name: "homepage" });
     },
