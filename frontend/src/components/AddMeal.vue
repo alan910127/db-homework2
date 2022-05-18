@@ -94,9 +94,8 @@ export default {
   },
   methods: {
     async getMeals() {
-      const res = await axios.get(`/getmeal/${this.shop.shopname}`);
-      console.log(res.data);
-      this.$store.dispatch("meals", res.data);
+      const response = await axios.get(`/getmeal/${this.shop.shopname}`);
+      this.$store.dispatch("meals", response.data);
     },
     async onSubmit() {
       for (const property in this.form) {
