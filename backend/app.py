@@ -218,6 +218,7 @@ def getShop():
 
     if orderCond:
         order, direction = orderCond.split('$')
+        print(f"{order=}, {direction=}")
         if order == 'shopname':
             if direction == 'asc':
                 result = Shop.query.filter(Shop.shopname.in_(shopListData)).order_by(Shop.shopname.asc())
@@ -242,7 +243,10 @@ def getShop():
     else:
         result = Shop.query.filter(Shop.shopname.in_(shopListData))
 
-    return shopListSchema.jsonify(result.limit(5).offset(5 * (page - 1)).all())
+    actualShopsNumber = result.count()
+    shopData = result.limit(5).offset(5 * (page - 1)).all()
+
+    return shopSchema.jsonify(shopData)
 
 @app.route('/addshop', methods=['POST'])
 def addShop():
@@ -286,7 +290,8 @@ def getMeal(shopname):
 
 @app.route('/getshop/<account>', methods=['GET'])
 def getshop(account):
-    shopData = Shop.query.filter_by(account=account).all()
+    userShop = User.query.get(account)
+    shopData = Shop.query.get(userShop.shopname)
     return shopSchema.jsonify(shopData)
 
 @app.route('/getshopname/<shopname>', methods=['GET'])
