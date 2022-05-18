@@ -283,5 +283,15 @@ def editMeal():
     db.session.commit()
     return ({'message': "The meal has been edited."}, 200)
 
+@app.route('/location', methods=['POST'])
+def updateLocation():
+    latitude = request.json["latitude"]
+    longitude = request.json["longitude"]
+    account = request.json["account"]
+    User.query.filter_by(account=account).update({'latitude': latitude, 'longitude': longitude})
+    db.session.commit()
+    userData = User.query.get(account)
+    return userSchema.jsonify(userData)
+
 if __name__ == '__main__':
     app.run(debug=True)
