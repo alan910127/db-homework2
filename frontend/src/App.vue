@@ -14,14 +14,11 @@ export default {
   },
   components: {},
   methods: {},
-  created() {
+  async created() {
     if (this.user === null) this.$router.push({ name: "signin" });
     else {
       // update the user data when the user has logged in (i.e., on refresh)
-      axios
-        .get(`/getuser/${this.user.account}`)
-        .then((response) => this.$store.dispatch("user", response.data))
-        .catch((error) => console.log(error));
+      await axios.get(`/getuser/${this.user.account}`);
       this.$router.push({ name: "homepage" });
     }
   },
