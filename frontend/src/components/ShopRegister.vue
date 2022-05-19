@@ -12,9 +12,9 @@
           :class="getInputClass('shopname')"
           @change="onInputChange($event, 'shopname')"
         />
-        <input v-else :value="shop.shopname" disabled="true" />
+        <input v-else :value="shop.shopname" disabled="true" class="filled" />
         <label for="shopname" class="placeholder">
-          <span v-if="user.role === 'user'">shopname</span>
+          <span>shopname</span>
         </label>
         <ul v-if="errors.shopname && errors.shopname.length">
           <li v-for="(error, index) in errors.shopname" :key="index">
@@ -32,9 +32,9 @@
           :class="getInputClass('category')"
           @change="onInputChange($event, 'category')"
         />
-        <input v-else :value="shop.category" disabled="true" />
+        <input v-else :value="shop.category" disabled="true" class="filled" />
         <label for="category" class="placeholder">
-          <span v-if="user.role === 'user'"> shop category</span>
+          <span> shop category</span>
         </label>
         <ul v-if="errors.category && errors.category.length">
           <li v-for="(error, index) in errors.category" :key="index">
@@ -53,9 +53,9 @@
           :class="getInputClass('latitude')"
           @change="onInputChange($event, 'latitude')"
         />
-        <input v-else :value="shop.latitude" disabled="true" />
+        <input v-else :value="shop.latitude" disabled="true" class="filled" />
         <label for="latitude" class="placeholder">
-          <span v-if="user.role === 'user'"> latitude</span>
+          <span> latitude</span>
         </label>
         <ul v-if="errors.latitude && errors.latitude.length">
           <li v-for="(error, index) in errors.latitude" :key="index">
@@ -74,9 +74,9 @@
           :class="getInputClass('longitude')"
           @change="onInputChange($event, 'longitude')"
         />
-        <input v-else :value="shop.longitude" disabled="true" />
+        <input v-else :value="shop.longitude" disabled="true" class="filled" />
         <label for="longitude" class="placeholder">
-          <span v-if="user.role === 'user'"> longitude</span>
+          <span> longitude</span>
         </label>
         <ul v-if="errors.longitude && errors.longitude.length">
           <li v-for="(error, index) in errors.longitude" :key="index">
@@ -98,7 +98,7 @@ import shopValidation from "@/mixins/shopValidation.js";
 
 export default {
   created() {
-    if (this.shop !== null) {
+    if (this.user.role === "owner") {
       this.form.shopname = this.shop.shopname;
       this.form.category = this.shop.category;
       this.form.latitude = this.shop.latitude;
@@ -142,7 +142,7 @@ export default {
     getInputClass(fieldName) {
       if (fieldName !== "longitude" && fieldName !== "latitude") {
         return (
-          (this.form[fieldName] !== "" ? "filled" : "") +
+          (this.form[fieldName].length ? "filled" : "") +
           (this.errors[fieldName] && this.errors[fieldName].length
             ? " danger"
             : "")
@@ -166,12 +166,16 @@ export default {
       }
 
       if (field === "shopname") {
-        const response = await axios.get(`/getshopname/${inputValue}`);
-        if (Object.keys(response.data).length !== 0) {
-          this.errors[field] = [
-            ...(this.errors[field] ? this.errors[field] : []),
-            "This shop name is already taken",
-          ];
+        try {
+          const response = await axios.get(`/getshopname/${inputValue}`);
+          if (Object.keys(response.data).length !== 0) {
+            this.errors[field] = [
+              ...(this.errors[field] ? this.errors[field] : []),
+              "This shop name is already taken",
+            ];
+          }
+        } catch {
+          return;
         }
       }
     },
@@ -209,7 +213,8 @@ export default {
 
     input:disabled {
       &:focus,
-      &:hover {
+      &:hover,
+      &.filled {
         border: 2px solid var(--secondary-color);
         cursor: not-allowed;
       }

@@ -15,7 +15,7 @@
           <td>{{ index + 1 }}</td>
           <td>{{ shop.shopname }}</td>
           <td>{{ shop.category }}</td>
-          <td>{{ getDistance(shop) }}</td>
+          <td>{{ Math.round(getDistance(shop)) }} m</td>
           <td>
             <popup-window v-if="shop.show" @closePopup="shop.show = false">
               <menu-page :shop="shop"></menu-page>
@@ -26,7 +26,7 @@
       </tbody>
     </table>
     <ul class="page-bar">
-      <li v-for="i in totalShopNumber" :key="i" @click="setPage(i)">
+      <li v-for="i in Math.ceil(shopCount / 5)" :key="i" @click="setPage(i)">
         {{ i }}
       </li>
     </ul>
@@ -43,10 +43,11 @@ import haversine from "haversine";
 export default {
   created() {
     this.$store.dispatch("shops", []);
+    this.$store.dispatch("shopCount", 0);
   },
   data() {
     return {
-      page: 0,
+      page: 1,
       totalShopNumber: 0,
       orders: {
         shopname: "asc",
@@ -57,9 +58,23 @@ export default {
     };
   },
   methods: {
-    setPage(pagenumber) {
+    async setPage(pagenumber) {
       this.page = pagenumber;
-      this.setOrder();
+
+      const response = await axios.post("/getshop", {
+        shopname: this.searchFilter.shopname,
+        distance: this.searchFilter.distance,
+        pricelow: this.searchFilter.pricelow,
+        pricehigh: this.searchFilter.pricehigh,
+        meal: this.searchFilter.meal,
+        category: this.searchFilter.category,
+        latitude: this.user.latitude,
+        longitude: this.user.longitude,
+        order: `${this.orders.current}$${this.orders[this.orders.current]}`,
+        page: this.page,
+        information: "shops",
+      });
+      this.$store.dispatch("shops", response.data);
     },
     getDistance(shop) {
       const distance = haversine(
@@ -74,13 +89,7 @@ export default {
         { unit: "kilometer" }
       );
 
-      let result = "";
-      if (distance <= 1.0) result = "near";
-      else if (distance > 1.0 && distance <= 3.0) result = "middle";
-      else if (distance <= 8.0) result = "far";
-      else result = "unavailable";
-
-      return result;
+      return distance * 1000;
     },
     async setOrder(field) {
       if (this.orders[field] === "asc") this.orders[field] = "desc";
@@ -98,14 +107,28 @@ export default {
         longitude: this.user.longitude,
         order: `${this.orders.current}$${this.orders[this.orders.current]}`,
         page: this.page,
+        information: "shops",
       });
-      console.log(response);
-      this.$store.dispatch("shops", response.data.shopData);
-      this.$store.dispatch("totalShopPage", response.data.actualPages);
+      this.$store.dispatch("shops", response.data);
+      const responseCount = await axios.post("/getshop", {
+        shopname: this.searchFilter.shopname,
+        distance: this.searchFilter.distance,
+        pricelow: this.searchFilter.pricelow,
+        pricehigh: this.searchFilter.pricehigh,
+        meal: this.searchFilter.meal,
+        category: this.searchFilter.category,
+        latitude: this.user.latitude,
+        longitude: this.user.longitude,
+        order: "",
+        page: 1,
+        information: "count",
+      });
+      console.log("responseCount", responseCount);
+      this.$store.dispatch("shopCount", responseCount.data.shopCount);
     },
   },
   computed: {
-    ...mapState(["shops", "user", "searchFilter", "totalShopPage"]),
+    ...mapState(["shops", "user", "searchFilter", "shopCount"]),
   },
   components: {
     PopupWindow,
