@@ -119,21 +119,21 @@ export default {
   methods: {
     async onSubmit() {
       try {
-        await axios.post("/addshop", {
+        const response = await axios.post("/addshop", {
           account: this.user.account,
           shopname: this.form.shopname,
           category: this.form.category,
           latitude: this.form.latitude,
           longitude: this.form.longitude,
         });
+
+        this.$store.dispatch("shop", res.data);
+        this.updateUser(this.user.account);
+        this.$router.go(0);
       } catch (error) {
-        const response = error.response.data.message;
-        alert(response);
+        alert(error.response.data.message);
         return;
       }
-      this.$store.dispatch("shop", res.data);
-      this.updateUser(this.user.account);
-      this.$router.go(0);
     },
     getInputClass(fieldName) {
       if (fieldName !== "longitude" && fieldName !== "latitude") {
