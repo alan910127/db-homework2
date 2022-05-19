@@ -83,6 +83,7 @@
             fill="currentColor"
             class="bi bi-person-circle"
             viewBox="0 0 16 16"
+            @click="toggleMenu"
           >
             <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
             <path
@@ -224,6 +225,7 @@
 <script>
 import { mapState } from "vuex";
 import axios from "axios";
+import signupValidation from "@/mixins/signupValidation.js";
 
 export default {
   created() {
@@ -250,6 +252,15 @@ export default {
       this.$router.push({ name: "signin" });
     },
     async onClick() {
+      const inputErrors = [
+        ...this.validateField("latitude", this.form.latitude),
+        ...this.validateField("longitude", this.form.longitude),
+      ];
+      if (inputErrors.length > 0) {
+        alert(inputErrors.join("\n"));
+        return;
+      }
+
       this.isEdit = !this.isEdit;
       if (!this.isEdit) {
         await axios
@@ -267,6 +278,7 @@ export default {
   computed: {
     ...mapState(["user"]),
   },
+  mixins: [signupValidation],
 };
 </script>
 
@@ -385,6 +397,7 @@ aside {
       .icon {
         color: var(--text-color);
         transition: 0.3s ease-out;
+        cursor: pointer;
       }
 
       .text {
