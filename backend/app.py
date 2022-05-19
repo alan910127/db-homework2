@@ -157,6 +157,7 @@ def getShop():
     latitude = request.json["latitude"]
     orderCond = request.json["order"]
     page = int(request.json["page"])
+    information = request.json["information"]
 
     condition = (2 if pricehigh else 0) | (1 if pricelow else 0)
     pattern = f'%{ meal }%' 
@@ -244,9 +245,10 @@ def getShop():
         result = Shop.query.filter(Shop.shopname.in_(shopListData))
 
     actualShopsNumber = result.count()
-    shopData = result.limit(5).offset(5 * (page - 1)).all()
-
-    return shopSchema.jsonify(shopData)
+    shopData = result.limit(5).offset(5 * (page-1)).all()
+    print(shopData)
+    return shopListSchema.jsonify(shopData) if information == 'shops' else {'shopCount':actualShopsNumber}
+    
 
 @app.route('/addshop', methods=['POST'])
 def addShop():
