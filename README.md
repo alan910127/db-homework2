@@ -28,7 +28,6 @@
     pip install flask-marshmallow
     pip install marshmallow
     pip install marshmallow-sqlalchemy
-    pip install mysqlclient
     pip install Flask-Cors
     ```
     
