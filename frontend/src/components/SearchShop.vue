@@ -108,8 +108,6 @@ export default {
         page: 0,
       });
 
-      console.log(response.data);
-
       this.$store.dispatch("searchFilter", {
         account: this.user.account,
         shopname: this.form.shopname,
@@ -122,6 +120,7 @@ export default {
         longitude: this.user.longitude,
       });
       this.$store.dispatch("shops", response.data);
+      console.log(response.data);
     },
     getInputClass(field) {
       return this.form[field] ? "filled" : "";

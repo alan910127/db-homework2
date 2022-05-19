@@ -243,6 +243,10 @@ export default {
     },
     logout() {
       this.$store.dispatch("user", null);
+      this.$store.dispatch("shops", []);
+      this.$store.dispatch("shop", null);
+      this.$store.dispatch("meals", []);
+      this.$store.dispatch("searchFilter", {});
       this.$router.push({ name: "signin" });
     },
     async onClick() {

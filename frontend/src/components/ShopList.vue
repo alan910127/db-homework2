@@ -4,13 +4,9 @@
       <thead>
         <tr>
           <th>#</th>
-          |
           <th class="clickable" @click="setOrder('shopname')">Shop Name</th>
-          |
           <th class="clickable" @click="setOrder('category')">Category</th>
-          |
           <th class="clickable" @click="setOrder('distance')">Distance</th>
-          |
           <th>Action</th>
         </tr>
       </thead>
@@ -29,6 +25,11 @@
         </tr>
       </tbody>
     </table>
+    <ul class="page-bar">
+      <li v-for="i in totalShopNumber" :key="i" @click="setPage(i)">
+        {{ i }}
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -46,6 +47,7 @@ export default {
   data() {
     return {
       page: 0,
+      totalShopNumber: 0,
       orders: {
         shopname: "asc",
         category: "asc",
@@ -55,6 +57,10 @@ export default {
     };
   },
   methods: {
+    setPage(pagenumber) {
+      this.page = pagenumber;
+      this.setOrder();
+    },
     getDistance(shop) {
       const distance = haversine(
         {
@@ -72,29 +78,34 @@ export default {
       if (distance <= 1.0) result = "near";
       else if (distance > 1.0 && distance <= 3.0) result = "middle";
       else if (distance <= 8.0) result = "far";
+      else result = "unavailable";
+
       return result;
     },
-    setOrder(field) {
+    async setOrder(field) {
       if (this.orders[field] === "asc") this.orders[field] = "desc";
       else this.orders[field] = "asc";
       this.orders.current = field;
-
-      let requestData = {
+      console.log("enter");
+      const response = await axios.post("/getshop", {
+        shopname: this.searchFilter.shopname,
+        distance: this.searchFilter.distance,
+        pricelow: this.searchFilter.pricelow,
+        pricehigh: this.searchFilter.pricehigh,
+        meal: this.searchFilter.meal,
+        category: this.searchFilter.category,
+        latitude: this.user.latitude,
+        longitude: this.user.longitude,
         order: `${this.orders.current}$${this.orders[this.orders.current]}`,
         page: this.page,
-      };
-      for (const property in this.searchFilter) {
-        requestData[property] = this.searchFilter[property];
-      }
-
-      console.log(this.searchFilter);
-      console.log(requestData);
-
-      axios.post("/getshop", requestData);
+      });
+      console.log(response);
+      this.$store.dispatch("shops", response.data.shopData);
+      this.$store.dispatch("totalShopPage", response.data.actualPages);
     },
   },
   computed: {
-    ...mapState(["shops", "user", "searchFilter"]),
+    ...mapState(["shops", "user", "searchFilter", "totalShopPage"]),
   },
   components: {
     PopupWindow,
@@ -152,5 +163,17 @@ table {
   }
   width: 100%;
   border-collapse: collapse;
+}
+
+.page-bar {
+  margin-left: auto;
+  @include flex-row;
+  align-self: center;
+  align-content: space-around;
+  gap: 2rem;
+  li {
+    list-style: none;
+    cursor: pointer;
+  }
 }
 </style>

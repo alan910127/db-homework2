@@ -97,6 +97,14 @@ import { mapState } from "vuex";
 import shopValidation from "@/mixins/shopValidation.js";
 
 export default {
+  created() {
+    if (this.shop !== null) {
+      this.form.shopname = this.shop.shopname;
+      this.form.category = this.shop.category;
+      this.form.latitude = this.shop.latitude;
+      this.form.longitude = this.shop.longitude;
+    }
+  },
   data() {
     return {
       form: {
@@ -120,7 +128,7 @@ export default {
         })
         .then((res) => {
           this.$store.dispatch("shop", res.data);
-          console.log(res.data);
+          this.updateUser(this.user.account);
           return;
         })
         .catch((error) => {
@@ -134,7 +142,7 @@ export default {
     getInputClass(fieldName) {
       if (fieldName !== "longitude" && fieldName !== "latitude") {
         return (
-          (this.form[fieldName].length ? "filled" : "") +
+          (this.form[fieldName] !== "" ? "filled" : "") +
           (this.errors[fieldName] && this.errors[fieldName].length
             ? " danger"
             : "")
@@ -159,7 +167,6 @@ export default {
 
       if (field === "shopname") {
         const response = await axios.get(`/getshopname/${inputValue}`);
-        console.log(response.data);
         if (Object.keys(response.data).length !== 0) {
           this.errors[field] = [
             ...(this.errors[field] ? this.errors[field] : []),
@@ -167,6 +174,11 @@ export default {
           ];
         }
       }
+    },
+    async updateUser(account) {
+      const response = await axios.get(`/getuser/${account}`);
+      console.log(response.data);
+      this.$store.dispatch("user", response.data);
     },
   },
   computed: {
