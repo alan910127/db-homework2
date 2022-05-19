@@ -22,6 +22,7 @@
               v-model="meal.price"
               :disabled="!meal.isEdit"
               type="number"
+              min="0"
             />
           </td>
           <td>
@@ -29,6 +30,7 @@
               v-model="meal.quantity"
               :disabled="!meal.isEdit"
               type="number"
+              min="0"
             />
           </td>
           <td>

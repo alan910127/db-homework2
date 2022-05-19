@@ -27,6 +27,7 @@
           name="pricelow"
           id="pricelow"
           type="number"
+          min="0"
           :class="getInputClass('pricelow')"
         />
         <label for="pricelow" class="placeholder">
@@ -39,6 +40,7 @@
           name="pricehigh"
           id="pricehigh"
           type="number"
+          min="0"
           :class="getInputClass('pricehigh')"
         />
         <label for="pricehigh" class="placeholder">

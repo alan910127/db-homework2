@@ -26,6 +26,7 @@
           name="price"
           id="price"
           type="number"
+          min="0"
           :class="getInputClass('price')"
           @change="onInputChange($event, 'price')"
         />
@@ -44,6 +45,7 @@
           name="quantity"
           id="quantity"
           type="number"
+          min="0"
           :class="getInputClass('quantity')"
           @change="onInputChange($event, 'quantity')"
         />
