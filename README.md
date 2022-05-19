@@ -3,11 +3,6 @@
 > Topic: Food Ordering Service part.1 <br>
 > Deadline: 2022/05/20 23:59
 
-## TODO
-
-- show 5 result in single page
-
-
 ## Virtual Environment Setup
 
 1. Change directory to this repo directory. 
