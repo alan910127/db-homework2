@@ -244,7 +244,7 @@ def getShop():
 
     shopCount = result.count()
     shopData = result.offset(5 * (page-1)).limit(5).all()
-    return {"shops": shopListSchema.dump(shopData), 'count': shopCount }
+    return { "shops": shopListSchema.dump(shopData), 'count': shopCount }
     
 
 @app.route('/addshop', methods=['POST'])
@@ -259,9 +259,7 @@ def addShop():
     if shop is None:
         shopData = Shop(shopname, category, latitude, longitude)
         db.session.add(shopData)
-        # db.session.commit()
-        User.query.filter(User.account == account).update({'role': "owner"})
-        User.query.filter(User.account == account).update({'shopname': shopname})
+        User.query.filter(User.account == account).update({'role': "owner", 'shopname': shopname})
         db.session.commit()
         return shopSchema.jsonify(shopData)
     else:
