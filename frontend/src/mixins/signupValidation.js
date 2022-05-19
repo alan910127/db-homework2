@@ -1,6 +1,7 @@
 const LETTER_REGEX = /^[a-zA-Z]+$/
 const ALNUM_REGEX = /^[a-zA-Z0-9]+$/
 const PHONE_REGEX = /^09[0-9]+$/
+const FLOAT_REGEX = /^[+-]?([0-9]*[.])?[0-9]+$/
 
 const signupValidation = {
     data() {
@@ -39,12 +40,14 @@ const signupValidation = {
                 latitude: {
                     rules: [
                         value => value !== null || 'Please fill in all fields',
+                        value => value === null || FLOAT_REGEX.test(String(value)) || 'Invalid latitude (should be a proper floating point number)',
                         value => (-90 <= value && value <= 90) || 'Invalid latitude (should be between -90 and 90)'
                     ]
                 },
                 longitude: {
                     rules: [
                         value => value !== null || 'Please fill in all fields',
+                        value => value === null || FLOAT_REGEX.test(String(value)) || 'Invalid longitude (should be a proper floating point number)',
                         value => (-180 <= value && value <= 180) || 'Invalid longitude (should be between -180 and 180)'
 
                     ]

@@ -20,7 +20,7 @@
           <td>{{ meal.price }}</td>
           <td>{{ meal.quantity }}</td>
           <td>
-            <button>Order</button>
+            <button disabled="true">Order</button>
           </td>
         </tr>
       </tbody>
