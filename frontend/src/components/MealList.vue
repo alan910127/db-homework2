@@ -77,6 +77,15 @@ export default {
       meal.isEdit = !meal.isEdit;
       if (meal.isEdit) return;
 
+      let inputErrors = [];
+      if (meal.price < 0) inputErrors.push("Price must be nonnegative");
+      if (meal.quantity < 0) inputErrors.push("Quantity must be nonnegative");
+      if (inputErrors.length > 0) {
+        alert(inputErrors.join("\n"));
+        meal.isEdit = true;
+        return;
+      }
+
       const numEditing = this.meals.filter((m) => m.isEdit === true).length;
 
       if (numEditing === 0) {
@@ -126,6 +135,18 @@ table {
     input {
       width: 65px;
       text-align: center;
+
+      /* Chrome, Safari, Edge, Opera */
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      /* Firefox */
+      &[type="number"] {
+        -moz-appearance: textfield;
+      }
     }
   }
   width: 100%;
