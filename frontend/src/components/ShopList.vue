@@ -86,7 +86,7 @@ export default {
       if (this.orders[field] === "asc") this.orders[field] = "desc";
       else this.orders[field] = "asc";
       this.orders.current = field;
-
+      console.log("enter");
       const response = await axios.post("/getshop", {
         shopname: this.searchFilter.shopname,
         distance: this.searchFilter.distance,

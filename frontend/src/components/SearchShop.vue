@@ -120,7 +120,7 @@ export default {
         longitude: this.user.longitude,
       });
       this.$store.dispatch("shops", response.data);
-      this.$store.dispatch("totalShopPage", response.data.length);
+      console.log(response.data);
     },
     getInputClass(field) {
       return this.form[field] ? "filled" : "";
