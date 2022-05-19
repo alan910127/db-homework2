@@ -127,7 +127,7 @@ export default {
           longitude: this.form.longitude,
         });
 
-        this.$store.dispatch("shop", res.data);
+        this.$store.dispatch("shop", response.data);
         this.updateUser(this.user.account);
         this.$router.go(0);
       } catch (error) {
