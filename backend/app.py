@@ -1,10 +1,9 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 from random import choices
 from hashlib import sha256
-import os
 import logging
 from config import *
 

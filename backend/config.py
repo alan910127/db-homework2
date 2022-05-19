@@ -5,4 +5,4 @@ BASE_DIR = os.path.abspath(os.getcwd())
 DB_NAME = 'db_homework.db'
 DEBUG=True
 
-DB_URI = f'sqlite:///{ BASE_DIR }/{ DB_NAME }'
+DB_URI = f'sqlite+pysqlite3:///{ BASE_DIR }/{ DB_NAME }'

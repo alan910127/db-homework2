@@ -1,3 +1,4 @@
 frontend/deploy.sh
 backend/__pycache__
 backend/db_homework.db
+backend/config.py
