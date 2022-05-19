@@ -26,7 +26,12 @@
       </tbody>
     </table>
     <ul class="page-bar">
-      <li v-for="i in Math.ceil(shopCount / 5)" :key="i" @click="setPage(i)">
+      <li
+        v-for="i in Math.ceil(shopCount / 5)"
+        :key="i"
+        @click="setPage(i)"
+        :class="i === page ? 'current' : ''"
+      >
         {{ i }}
       </li>
     </ul>
@@ -50,9 +55,9 @@ export default {
       page: 1,
       totalShopNumber: 0,
       orders: {
-        shopname: "asc",
-        category: "asc",
-        distance: "asc",
+        shopname: "",
+        category: "",
+        distance: "",
         current: null,
       },
     };
@@ -70,11 +75,11 @@ export default {
         category: this.searchFilter.category,
         latitude: this.user.latitude,
         longitude: this.user.longitude,
-        order: `${this.orders.current}$${this.orders[this.orders.current]}`,
+        order: this.searchFilter.order,
         page: this.page,
-        information: "shops",
       });
-      this.$store.dispatch("shops", response.data);
+      this.$store.dispatch("shops", response.data.shops);
+      this.$store.dispatch("shopCount", response.data.count);
     },
     getDistance(shop) {
       const distance = haversine(
@@ -95,7 +100,10 @@ export default {
       if (this.orders[field] === "asc") this.orders[field] = "desc";
       else this.orders[field] = "asc";
       this.orders.current = field;
-      console.log("enter");
+      this.searchFilter.order = `${this.orders.current}$${
+        this.orders[this.orders.current]
+      }`;
+      console.log(`${this.orders.current}$${this.orders[this.orders.current]}`);
       const response = await axios.post("/getshop", {
         shopname: this.searchFilter.shopname,
         distance: this.searchFilter.distance,
@@ -105,26 +113,12 @@ export default {
         category: this.searchFilter.category,
         latitude: this.user.latitude,
         longitude: this.user.longitude,
-        order: `${this.orders.current}$${this.orders[this.orders.current]}`,
-        page: this.page,
-        information: "shops",
-      });
-      this.$store.dispatch("shops", response.data);
-      const responseCount = await axios.post("/getshop", {
-        shopname: this.searchFilter.shopname,
-        distance: this.searchFilter.distance,
-        pricelow: this.searchFilter.pricelow,
-        pricehigh: this.searchFilter.pricehigh,
-        meal: this.searchFilter.meal,
-        category: this.searchFilter.category,
-        latitude: this.user.latitude,
-        longitude: this.user.longitude,
-        order: "",
+        order: this.searchFilter.order,
         page: 1,
-        information: "count",
       });
-      console.log("responseCount", responseCount);
-      this.$store.dispatch("shopCount", responseCount.data.shopCount);
+      this.$store.dispatch("shops", response.data.shops);
+      this.$store.dispatch("shopCount", response.data.count);
+      this.$store.dispatch("searchFilter", this.searchFilter);
     },
   },
   computed: {
@@ -197,6 +191,12 @@ table {
   li {
     list-style: none;
     cursor: pointer;
+    color: var(--text-color);
+    font-weight: 300;
+    &.current {
+      color: var(--info-color);
+      font-weight: 800;
+    }
   }
 }
 </style>

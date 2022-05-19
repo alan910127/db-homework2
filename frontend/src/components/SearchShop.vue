@@ -105,24 +105,9 @@ export default {
         longitude: this.user.longitude,
         order: "",
         page: 1,
-        information: "shops",
       });
-      this.$store.dispatch("shops", response.data);
-      console.log(response.data);
-      const responseCount = await axios.post("/getshop", {
-        shopname: this.form.shopname,
-        distance: this.form.distance,
-        pricelow: this.form.pricelow,
-        pricehigh: this.form.pricehigh,
-        meal: this.form.meal,
-        category: this.form.category,
-        latitude: this.user.latitude,
-        longitude: this.user.longitude,
-        order: "",
-        page: 1,
-        information: "count",
-      });
-      this.$store.dispatch("shopCount", responseCount.data.shopCount);
+      this.$store.dispatch("shops", response.data.shops);
+      this.$store.dispatch("shopCount", response.data.count);
 
       this.$store.dispatch("searchFilter", {
         shopname: this.form.shopname,
@@ -133,6 +118,7 @@ export default {
         category: this.form.category,
         latitude: this.user.latitude,
         longitude: this.user.longitude,
+        order: "",
       });
     },
     getInputClass(field) {

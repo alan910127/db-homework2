@@ -5,20 +5,21 @@ from flask_cors import CORS
 from random import choices
 from hashlib import sha256
 import os
+import logging
+from config import *
 
-ALL_CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-BASE_DIR = os.path.abspath(os.getcwd())
-DB_NAME = 'db_homework.db'
+if DEBUG:
+    logging.basicConfig()
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 app = Flask(__name__)
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{ BASE_DIR }/{ DB_NAME }'
+app.config['SQLALCHEMY_DATABASE_URI'] = DB_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
-
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -53,6 +54,7 @@ class Shop(db.Model):
         self.category = category
         self.latitude = latitude
         self.longitude = longitude
+
 
 class Meal(db.Model):
     __tablename__ = 'meals'
@@ -157,7 +159,6 @@ def getShop():
     latitude = request.json["latitude"]
     orderCond = request.json["order"]
     page = int(request.json["page"])
-    information = request.json["information"]
 
     condition = (2 if pricehigh else 0) | (1 if pricelow else 0)
     pattern = f'%{ meal }%' 
@@ -208,7 +209,6 @@ def getShop():
                         func.cos( func.radians(latitude) ) * func.cos( func.radians(Shop.latitude) ) * func.pow( func.sin( (func.radians(longitude) - func.radians(Shop.longitude)) / 2 ), 2 ) ) ) ) ) <= upper_bound
                     ).with_entities(Shop.shopname).distinct()
 
-    
     shopListData =  Shop.query.filter(
                         Shop.shopname.ilike(f'%{ shopname }%'), 
                         Shop.category.ilike(f'%{ category }%'),
@@ -219,7 +219,6 @@ def getShop():
 
     if orderCond:
         order, direction = orderCond.split('$')
-        print(f"{order=}, {direction=}")
         if order == 'shopname':
             if direction == 'asc':
                 result = Shop.query.filter(Shop.shopname.in_(shopListData)).order_by(Shop.shopname.asc())
@@ -244,10 +243,9 @@ def getShop():
     else:
         result = Shop.query.filter(Shop.shopname.in_(shopListData))
 
-    actualShopsNumber = result.count()
-    shopData = result.limit(5).offset(5 * (page-1)).all()
-    print(shopData)
-    return shopListSchema.jsonify(shopData) if information == 'shops' else {'shopCount':actualShopsNumber}
+    shopCount = result.count()
+    shopData = result.offset(5 * (page-1)).limit(5).all()
+    return {"shops": shopListSchema.dump(shopData), 'count': shopCount }
     
 
 @app.route('/addshop', methods=['POST'])
@@ -333,4 +331,4 @@ def updateLocation():
     return userSchema.jsonify(userData)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=DEBUG)
