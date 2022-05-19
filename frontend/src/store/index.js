@@ -9,7 +9,7 @@ export default createStore({
     shop: null,
     meals: [],
     searchFilter: {},
-    totalShopPage: null,
+    shopCount: null,
   },
   getters: {
     user: (state) => state.user,
@@ -17,7 +17,7 @@ export default createStore({
     shop: (state) => state.shop,
     meals: (state) => state.meals,
     searchFilter: (state) => state.searchFilter,
-    totalShopPage: (state) => state.totalShopPage,
+    shopCount: (state) => state.shopCount,
 
   },
   mutations: {
@@ -36,8 +36,8 @@ export default createStore({
     searchFilter(state, searchFilter) {
       state.searchFilter = searchFilter;
     },
-    totalShopPage(state, totalShopPage) {
-      state.totalShopPage = totalShopPage;
+    shopCount(state, shopCount) {
+      state.shopCount = shopCount;
     }
   },
   actions: {
@@ -56,8 +56,8 @@ export default createStore({
     searchFilter(context, searchFilter) {
       context.commit('searchFilter', searchFilter);
     },
-    totalShopPage(context, totalShopPage) {
-      context.commit('totalShopPage', totalShopPage);
+    shopCount(context, shopCount) {
+      context.commit('shopCount', shopCount);
     }
   },
   modules: {
