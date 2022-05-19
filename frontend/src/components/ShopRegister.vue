@@ -118,25 +118,21 @@ export default {
   },
   methods: {
     async onSubmit() {
-      await axios
-        .post("/addshop", {
+      try {
+        await axios.post("/addshop", {
           account: this.user.account,
           shopname: this.form.shopname,
           category: this.form.category,
           latitude: this.form.latitude,
           longitude: this.form.longitude,
-        })
-        .then((res) => {
-          this.$store.dispatch("shop", res.data);
-          this.updateUser(this.user.account);
-          return;
-        })
-        .catch((error) => {
-          const response = error.response.data.message;
-          alert(response);
-          return;
         });
-
+      } catch (error) {
+        const response = error.response.data.message;
+        alert(response);
+        return;
+      }
+      this.$store.dispatch("shop", res.data);
+      this.updateUser(this.user.account);
       this.$router.go(0);
     },
     getInputClass(fieldName) {
@@ -181,7 +177,6 @@ export default {
     },
     async updateUser(account) {
       const response = await axios.get(`/getuser/${account}`);
-      console.log(response.data);
       this.$store.dispatch("user", response.data);
     },
   },
