@@ -156,7 +156,7 @@
               </svg>
               <div class="location">
                 <div class="lat">
-                  <label for="lat">lat </label>
+                  <label for="lat">lat -</label>
                   <input
                     type="number"
                     step="0.000000000000001"
@@ -166,13 +166,13 @@
                   />
                 </div>
                 <div class="lng">
-                  <label for="long">lng </label>
+                  <label for="lng">lng -</label>
                   <input
                     type="number"
                     step="0.000000000000001"
                     v-model="form.longitude"
                     :disabled="!isEdit"
-                    id="long"
+                    id="lng"
                   />
                 </div>
               </div>
@@ -406,8 +406,28 @@ aside {
       }
 
       input {
-        border: none;
+        border: 1px solid var(--secondary-color);
+        outline: none;
         width: 50%;
+        color: var(--text-color);
+        background-color: var(--secondary-color);
+        border-bottom: 1px solid var(--black-color);
+
+        &:disabled {
+          border: 1px solid var(--secondary-color);
+        }
+
+        /* Chrome, Safari, Edge, Opera */
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        /* Firefox */
+        &[type="number"] {
+          -moz-appearance: textfield;
+        }
       }
     }
 
